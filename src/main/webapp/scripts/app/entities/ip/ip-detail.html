@@ -1,0 +1,46 @@
+
+<div>
+    <h2><span translate="hadooprestApp.ip.detail.title">Ip</span> {{ip.id}}</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th translate="entity.detail.field">Field</th>
+                    <th translate="entity.detail.value">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.ip.address">Address</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{ip.address}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.ip.enabled">Enabled</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{ip.enabled}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.ip.user">user</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{ip.user.login}}" readonly>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button type="submit"
+            ui-sref="ip"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

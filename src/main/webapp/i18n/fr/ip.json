@@ -1,0 +1,21 @@
+{
+    "hadooprestApp": {
+        "ip" : {
+            "home": {
+                "title": "Ips",
+                "createLabel": "Créer un nouveau Ip",
+                "createOrEditLabel": "Créer ou éditer un Ip"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Ip {{ id }} ?"
+            },
+            "detail": {
+                "title": "Ip"
+            },
+            "address": "Address",
+            "enabled": "Enabled",
+            "user": "user"
+        }
+    }
+}
+
