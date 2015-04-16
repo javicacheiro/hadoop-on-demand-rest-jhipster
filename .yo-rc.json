@@ -1,0 +1,19 @@
+{
+  "generator-jhipster": {
+    "baseName": "hadooprest",
+    "packageName": "es.cesga.hadoop",
+    "packageFolder": "es/cesga/hadoop",
+    "authenticationType": "xauth",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": "no",
+    "websocket": "no",
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "useCompass": false,
+    "buildTool": "maven",
+    "frontendBuilder": "grunt",
+    "javaVersion": "8",
+    "rememberMeKey": "d60c10d51317616b36f5fba934d925648def68a6"
+  }
+}
