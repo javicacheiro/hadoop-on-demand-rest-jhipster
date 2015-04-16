@@ -1,0 +1,21 @@
+{
+    "hadooprestApp": {
+        "key" : {
+            "home": {
+                "title": "Keys",
+                "createLabel": "Create a new Key",
+                "createOrEditLabel": "Create or edit a Key"
+            },
+            "delete": {
+                "question": "Are you sure you want to delete Key {{ id }}?"
+            },
+            "detail": {
+                "title": "Key"
+            },
+            "type": "Type",
+            "pubkey": "Pubkey",
+            "enabled": "Enabled",
+            "user": "user"
+        }
+    }
+}

@@ -7,6 +7,7 @@
             "entities": {
                 "main": "Entités",
                 "ip": "Ip",
+                "key": "Key",
                 "additionalEntity": "JHipster will add addtional entities"
             },
             "account": {
