@@ -1,21 +1,18 @@
 package es.cesga.hadoop.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
  * A Ip.
  */
 @Entity
-@Table(name = "T_IP")
+@Table(name = "IP")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Ip implements Serializable {
 
@@ -26,11 +23,14 @@ public class Ip implements Serializable {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "mask")
+    private Integer mask;
+
     @Column(name = "enabled")
     private Boolean enabled;
 
-    @ManyToOne
-    private User user;
+    @Column(name = "username")
+    private String username;
 
     public Long getId() {
         return id;
@@ -48,6 +48,14 @@ public class Ip implements Serializable {
         this.address = address;
     }
 
+    public Integer getMask() {
+        return mask;
+    }
+
+    public void setMask(Integer mask) {
+        this.mask = mask;
+    }
+
     public Boolean getEnabled() {
         return enabled;
     }
@@ -56,12 +64,12 @@ public class Ip implements Serializable {
         this.enabled = enabled;
     }
 
-    public User getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -90,7 +98,9 @@ public class Ip implements Serializable {
         return "Ip{" +
                 "id=" + id +
                 ", address='" + address + "'" +
+                ", mask='" + mask + "'" +
                 ", enabled='" + enabled + "'" +
+                ", username='" + username + "'" +
                 '}';
     }
 }

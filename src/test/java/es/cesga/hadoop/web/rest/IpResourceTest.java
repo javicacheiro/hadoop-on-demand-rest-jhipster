@@ -7,6 +7,7 @@ import es.cesga.hadoop.repository.IpRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -40,8 +41,13 @@ public class IpResourceTest {
     private static final String DEFAULT_ADDRESS = "SAMPLE_TEXT";
     private static final String UPDATED_ADDRESS = "UPDATED_TEXT";
 
+    private static final Integer DEFAULT_MASK = 0;
+    private static final Integer UPDATED_MASK = 1;
+
     private static final Boolean DEFAULT_ENABLED = false;
     private static final Boolean UPDATED_ENABLED = true;
+    private static final String DEFAULT_USERNAME = "SAMPLE_TEXT";
+    private static final String UPDATED_USERNAME = "UPDATED_TEXT";
 
     @Inject
     private IpRepository ipRepository;
@@ -62,14 +68,15 @@ public class IpResourceTest {
     public void initTest() {
         ip = new Ip();
         ip.setAddress(DEFAULT_ADDRESS);
+        ip.setMask(DEFAULT_MASK);
         ip.setEnabled(DEFAULT_ENABLED);
+        ip.setUsername(DEFAULT_USERNAME);
     }
 
     @Test
     @Transactional
     public void createIp() throws Exception {
-        // Validate the database is empty
-        assertThat(ipRepository.findAll()).hasSize(0);
+        int databaseSizeBeforeCreate = ipRepository.findAll().size();
 
         // Create the Ip
         restIpMockMvc.perform(post("/api/ips")
@@ -79,10 +86,12 @@ public class IpResourceTest {
 
         // Validate the Ip in the database
         List<Ip> ips = ipRepository.findAll();
-        assertThat(ips).hasSize(1);
-        Ip testIp = ips.iterator().next();
+        assertThat(ips).hasSize(databaseSizeBeforeCreate + 1);
+        Ip testIp = ips.get(ips.size() - 1);
         assertThat(testIp.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertThat(testIp.getMask()).isEqualTo(DEFAULT_MASK);
         assertThat(testIp.getEnabled()).isEqualTo(DEFAULT_ENABLED);
+        assertThat(testIp.getUsername()).isEqualTo(DEFAULT_USERNAME);
     }
 
     @Test
@@ -95,9 +104,11 @@ public class IpResourceTest {
         restIpMockMvc.perform(get("/api/ips"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].id").value(ip.getId().intValue()))
-                .andExpect(jsonPath("$.[0].address").value(DEFAULT_ADDRESS.toString()))
-                .andExpect(jsonPath("$.[0].enabled").value(DEFAULT_ENABLED.booleanValue()));
+                .andExpect(jsonPath("$.[*].id").value(hasItem(ip.getId().intValue())))
+                .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
+                .andExpect(jsonPath("$.[*].mask").value(hasItem(DEFAULT_MASK)))
+                .andExpect(jsonPath("$.[*].enabled").value(hasItem(DEFAULT_ENABLED.booleanValue())))
+                .andExpect(jsonPath("$.[*].username").value(hasItem(DEFAULT_USERNAME.toString())));
     }
 
     @Test
@@ -112,14 +123,16 @@ public class IpResourceTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(ip.getId().intValue()))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS.toString()))
-            .andExpect(jsonPath("$.enabled").value(DEFAULT_ENABLED.booleanValue()));
+            .andExpect(jsonPath("$.mask").value(DEFAULT_MASK))
+            .andExpect(jsonPath("$.enabled").value(DEFAULT_ENABLED.booleanValue()))
+            .andExpect(jsonPath("$.username").value(DEFAULT_USERNAME.toString()));
     }
 
     @Test
     @Transactional
     public void getNonExistingIp() throws Exception {
         // Get the ip
-        restIpMockMvc.perform(get("/api/ips/{id}", 1L))
+        restIpMockMvc.perform(get("/api/ips/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -128,10 +141,14 @@ public class IpResourceTest {
     public void updateIp() throws Exception {
         // Initialize the database
         ipRepository.saveAndFlush(ip);
+		
+		int databaseSizeBeforeUpdate = ipRepository.findAll().size();
 
         // Update the ip
         ip.setAddress(UPDATED_ADDRESS);
+        ip.setMask(UPDATED_MASK);
         ip.setEnabled(UPDATED_ENABLED);
+        ip.setUsername(UPDATED_USERNAME);
         restIpMockMvc.perform(put("/api/ips")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(ip)))
@@ -139,10 +156,12 @@ public class IpResourceTest {
 
         // Validate the Ip in the database
         List<Ip> ips = ipRepository.findAll();
-        assertThat(ips).hasSize(1);
-        Ip testIp = ips.iterator().next();
+        assertThat(ips).hasSize(databaseSizeBeforeUpdate);
+        Ip testIp = ips.get(ips.size() - 1);
         assertThat(testIp.getAddress()).isEqualTo(UPDATED_ADDRESS);
+        assertThat(testIp.getMask()).isEqualTo(UPDATED_MASK);
         assertThat(testIp.getEnabled()).isEqualTo(UPDATED_ENABLED);
+        assertThat(testIp.getUsername()).isEqualTo(UPDATED_USERNAME);
     }
 
     @Test
@@ -150,6 +169,8 @@ public class IpResourceTest {
     public void deleteIp() throws Exception {
         // Initialize the database
         ipRepository.saveAndFlush(ip);
+		
+		int databaseSizeBeforeDelete = ipRepository.findAll().size();
 
         // Get the ip
         restIpMockMvc.perform(delete("/api/ips/{id}", ip.getId())
@@ -158,6 +179,6 @@ public class IpResourceTest {
 
         // Validate the database is empty
         List<Ip> ips = ipRepository.findAll();
-        assertThat(ips).hasSize(0);
+        assertThat(ips).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

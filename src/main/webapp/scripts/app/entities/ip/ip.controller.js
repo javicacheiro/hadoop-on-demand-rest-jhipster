@@ -1,9 +1,8 @@
 'use strict';
 
 angular.module('hadooprestApp')
-    .controller('IpController', function ($scope, Ip, User, ParseLinks) {
+    .controller('IpController', function ($scope, Ip, ParseLinks) {
         $scope.ips = [];
-        $scope.users = User.query();
         $scope.page = 1;
         $scope.loadAll = function() {
             Ip.query({page: $scope.page, per_page: 20}, function(result, headers) {
@@ -50,7 +49,7 @@ angular.module('hadooprestApp')
         };
 
         $scope.clear = function () {
-            $scope.ip = {address: null, enabled: null, id: null};
+            $scope.ip = {address: null, mask: null, enabled: null, username: null, id: null};
             $scope.editForm.$setPristine();
             $scope.editForm.$setUntouched();
         };

@@ -1,50 +1,49 @@
 'use strict';
 
 angular.module('hadooprestApp')
-    .controller('KeyController', function ($scope, Key, User) {
-        $scope.keys = [];
-        $scope.users = User.query();
+    .controller('SshKeyController', function ($scope, SshKey) {
+        $scope.sshKeys = [];
         $scope.loadAll = function() {
-            Key.query(function(result) {
-               $scope.keys = result;
+            SshKey.query(function(result) {
+               $scope.sshKeys = result;
             });
         };
         $scope.loadAll();
 
         $scope.create = function () {
-            Key.update($scope.key,
+            SshKey.update($scope.sshKey,
                 function () {
                     $scope.loadAll();
-                    $('#saveKeyModal').modal('hide');
+                    $('#saveSshKeyModal').modal('hide');
                     $scope.clear();
                 });
         };
 
         $scope.update = function (id) {
-            Key.get({id: id}, function(result) {
-                $scope.key = result;
-                $('#saveKeyModal').modal('show');
+            SshKey.get({id: id}, function(result) {
+                $scope.sshKey = result;
+                $('#saveSshKeyModal').modal('show');
             });
         };
 
         $scope.delete = function (id) {
-            Key.get({id: id}, function(result) {
-                $scope.key = result;
-                $('#deleteKeyConfirmation').modal('show');
+            SshKey.get({id: id}, function(result) {
+                $scope.sshKey = result;
+                $('#deleteSshKeyConfirmation').modal('show');
             });
         };
 
         $scope.confirmDelete = function (id) {
-            Key.delete({id: id},
+            SshKey.delete({id: id},
                 function () {
                     $scope.loadAll();
-                    $('#deleteKeyConfirmation').modal('hide');
+                    $('#deleteSshKeyConfirmation').modal('hide');
                     $scope.clear();
                 });
         };
 
         $scope.clear = function () {
-            $scope.key = {type: null, pubkey: null, enabled: null, id: null};
+            $scope.sshKey = {type: null, pubkey: null, enabled: null, username: null, id: null};
             $scope.editForm.$setPristine();
             $scope.editForm.$setUntouched();
         };

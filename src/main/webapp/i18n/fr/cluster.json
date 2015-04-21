@@ -1,0 +1,28 @@
+{
+    "hadooprestApp": {
+        "cluster" : {
+            "home": {
+                "title": "Clusters",
+                "createLabel": "Créer un nouveau Cluster",
+                "createOrEditLabel": "Créer ou éditer un Cluster"
+            },
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Cluster {{ id }} ?"
+            },
+            "detail": {
+                "title": "Cluster"
+            },
+            "clustername": "Clustername",
+            "version": "Version",
+            "size": "Size",
+            "replication": "Replication",
+            "blocksize": "Blocksize",
+            "submitTime": "SubmitTime",
+            "stopTime": "StopTime",
+            "exitStatus": "ExitStatus",
+            "status": "Status",
+            "username": "Username"
+        }
+    }
+}
+

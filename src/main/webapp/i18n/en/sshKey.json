@@ -1,0 +1,21 @@
+{
+    "hadooprestApp": {
+        "sshKey" : {
+            "home": {
+                "title": "SshKeys",
+                "createLabel": "Create a new SshKey",
+                "createOrEditLabel": "Create or edit a SshKey"
+            },
+            "delete": {
+                "question": "Are you sure you want to delete SshKey {{ id }}?"
+            },
+            "detail": {
+                "title": "SshKey"
+            },
+            "type": "Type",
+            "pubkey": "Pubkey",
+            "enabled": "Enabled",
+            "username": "Username"
+        }
+    }
+}

@@ -1,0 +1,102 @@
+
+<div>
+    <h2><span translate="hadooprestApp.cluster.detail.title">Cluster</span> {{cluster.id}}</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th translate="entity.detail.field">Field</th>
+                    <th translate="entity.detail.value">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.clustername">Clustername</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.clustername}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.version">Version</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.version}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.size">Size</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.size}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.replication">Replication</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.replication}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.blocksize">Blocksize</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.blocksize}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.submitTime">SubmitTime</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.submitTime}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.stopTime">StopTime</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.stopTime}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.exitStatus">ExitStatus</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.exitStatus}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.status">Status</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.status}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.cluster.username">Username</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{cluster.username}}" readonly>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button type="submit"
+            ui-sref="cluster"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

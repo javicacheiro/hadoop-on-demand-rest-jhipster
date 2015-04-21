@@ -1,0 +1,105 @@
+{
+    "relationships": [],
+    "fields": [
+        {
+            "fieldId": 1,
+            "fieldName": "clustername",
+            "fieldType": "String",
+            "fieldNameCapitalized": "Clustername",
+            "fieldNameUnderscored": "clustername",
+            "fieldInJavaBeanMethod": "Clustername",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 2,
+            "fieldName": "version",
+            "fieldType": "String",
+            "fieldNameCapitalized": "Version",
+            "fieldNameUnderscored": "version",
+            "fieldInJavaBeanMethod": "Version",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 3,
+            "fieldName": "size",
+            "fieldType": "Integer",
+            "fieldNameCapitalized": "Size",
+            "fieldNameUnderscored": "size",
+            "fieldInJavaBeanMethod": "Size",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 4,
+            "fieldName": "replication",
+            "fieldType": "Integer",
+            "fieldNameCapitalized": "Replication",
+            "fieldNameUnderscored": "replication",
+            "fieldInJavaBeanMethod": "Replication",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 5,
+            "fieldName": "blocksize",
+            "fieldType": "Integer",
+            "fieldNameCapitalized": "Blocksize",
+            "fieldNameUnderscored": "blocksize",
+            "fieldInJavaBeanMethod": "Blocksize",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 6,
+            "fieldName": "submitTime",
+            "fieldType": "DateTime",
+            "fieldNameCapitalized": "SubmitTime",
+            "fieldNameUnderscored": "submit_time",
+            "fieldInJavaBeanMethod": "SubmitTime",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 7,
+            "fieldName": "stopTime",
+            "fieldType": "DateTime",
+            "fieldNameCapitalized": "StopTime",
+            "fieldNameUnderscored": "stop_time",
+            "fieldInJavaBeanMethod": "StopTime",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 8,
+            "fieldName": "exitStatus",
+            "fieldType": "Integer",
+            "fieldNameCapitalized": "ExitStatus",
+            "fieldNameUnderscored": "exit_status",
+            "fieldInJavaBeanMethod": "ExitStatus",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 9,
+            "fieldName": "status",
+            "fieldType": "String",
+            "fieldNameCapitalized": "Status",
+            "fieldNameUnderscored": "status",
+            "fieldInJavaBeanMethod": "Status",
+            "fieldValidate": false
+        },
+        {
+            "fieldId": 10,
+            "fieldName": "username",
+            "fieldType": "String",
+            "fieldNameCapitalized": "Username",
+            "fieldNameUnderscored": "username",
+            "fieldInJavaBeanMethod": "Username",
+            "fieldValidate": false
+        }
+    ],
+    "fieldsContainOwnerManyToMany": false,
+    "fieldsContainOneToMany": false,
+    "fieldsContainLocalDate": false,
+    "fieldsContainCustomTime": true,
+    "fieldsContainBigDecimal": false,
+    "fieldsContainDateTime": true,
+    "fieldsContainDate": false,
+    "changelogDate": "20150421220006",
+    "pagination": "no",
+    "validation": false
+}

@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.duration._
 
 /**
- * Performance test for the Key entity.
+ * Performance test for the SshKey entity.
  */
-class KeyGatlingTest extends Simulation {
+class SshKeyGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
     // Log all HTTP requests
@@ -43,7 +43,7 @@ class KeyGatlingTest extends Simulation {
         "x-auth-token" -> "${x_auth_token}"
     )
 
-    val scn = scenario("Test the Key entity")
+    val scn = scenario("Test the SshKey entity")
         .exec(http("First unauthenticated request")
         .get("/api/account")
         .headers(headers_http)
@@ -62,26 +62,26 @@ class KeyGatlingTest extends Simulation {
         .check(status.is(200)))
         .pause(10)
         .repeat(2) {
-            exec(http("Get all keys")
-            .get("/api/keys")
+            exec(http("Get all sshKeys")
+            .get("/api/sshKeys")
             .headers(headers_http_authenticated)
             .check(status.is(200)))
             .pause(10 seconds, 20 seconds)
-            .exec(http("Create new key")
-            .put("/api/keys")
+            .exec(http("Create new sshKey")
+            .put("/api/sshKeys")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "type":"SAMPLE_TEXT", "pubkey":"SAMPLE_TEXT", "enabled":null}""")).asJSON
+            .body(StringBody("""{"id":null, "type":"SAMPLE_TEXT", "pubkey":"SAMPLE_TEXT", "enabled":null, "username":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
-            .check(headerRegex("Location", "(.*)").saveAs("new_key_url")))
+            .check(headerRegex("Location", "(.*)").saveAs("new_sshKey_url")))
             .pause(10)
             .repeat(5) {
-                exec(http("Get created key")
-                .get("${new_key_url}")
+                exec(http("Get created sshKey")
+                .get("${new_sshKey_url}")
                 .headers(headers_http_authenticated))
                 .pause(10)
             }
-            .exec(http("Delete created key")
-            .delete("${new_key_url}")
+            .exec(http("Delete created sshKey")
+            .delete("${new_sshKey_url}")
             .headers(headers_http_authenticated))
             .pause(10)
         }

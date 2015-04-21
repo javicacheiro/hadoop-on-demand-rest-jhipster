@@ -1,6 +1,6 @@
 
 <div>
-    <h2><span translate="hadooprestApp.key.detail.title">Key</span> {{key.id}}</h2>
+    <h2><span translate="hadooprestApp.sshKey.detail.title">SshKey</span> {{sshKey.id}}</h2>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -12,34 +12,34 @@
             <tbody>
                 <tr>
                     <td>
-                        <span translate="hadooprestApp.key.type">Type</span>
+                        <span translate="hadooprestApp.sshKey.type">Type</span>
                     </td>
                     <td>
-                        <input type="text" class="input-sm form-control" value="{{key.type}}" readonly>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span translate="hadooprestApp.key.pubkey">Pubkey</span>
-                    </td>
-                    <td>
-                        <input type="text" class="input-sm form-control" value="{{key.pubkey}}" readonly>
+                        <input type="text" class="input-sm form-control" value="{{sshKey.type}}" readonly>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <span translate="hadooprestApp.key.enabled">Enabled</span>
+                        <span translate="hadooprestApp.sshKey.pubkey">Pubkey</span>
                     </td>
                     <td>
-                        <input type="text" class="input-sm form-control" value="{{key.enabled}}" readonly>
+                        <input type="text" class="input-sm form-control" value="{{sshKey.pubkey}}" readonly>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <span translate="hadooprestApp.key.user">user</span>
+                        <span translate="hadooprestApp.sshKey.enabled">Enabled</span>
                     </td>
                     <td>
-                        <input type="text" class="input-sm form-control" value="{{key.user.login}}" readonly>
+                        <input type="text" class="input-sm form-control" value="{{sshKey.enabled}}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span translate="hadooprestApp.sshKey.username">Username</span>
+                    </td>
+                    <td>
+                        <input type="text" class="input-sm form-control" value="{{sshKey.username}}" readonly>
                     </td>
                 </tr>
             </tbody>
@@ -47,7 +47,7 @@
     </div>
 
     <button type="submit"
-            ui-sref="key"
+            ui-sref="sshKey"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
     </button>

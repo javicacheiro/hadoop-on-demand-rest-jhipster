@@ -1,0 +1,178 @@
+<div>
+
+    <h2 translate="hadooprestApp.cluster.home.title">Cluster</h2>
+
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveClusterModal" ng-click="clear()">
+        <span class="glyphicon glyphicon-flash"></span> <span translate="hadooprestApp.cluster.home.createLabel">Create a new Cluster</span>
+    </button>
+    <div class="modal fade" id="saveClusterModal" tabindex="-1" role="dialog" aria-labelledby="myClusterLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="editForm" role="form" novalidate ng-submit="create()">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" id="myClusterLabel" translate="hadooprestApp.cluster.home.createOrEditLabel">Create or edit a Cluster</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>ID</label>
+                            <input type="text" class="form-control" name="id"
+                                   ng-model="cluster.id" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.clustername">Clustername</label>
+                            <input type="text" class="form-control" name="clustername"
+                                   ng-model="cluster.clustername">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.version">Version</label>
+                            <input type="text" class="form-control" name="version"
+                                   ng-model="cluster.version">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.size">Size</label>
+                            <input type="number" class="form-control" name="size"
+                                   ng-model="cluster.size">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.replication">Replication</label>
+                            <input type="number" class="form-control" name="replication"
+                                   ng-model="cluster.replication">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.blocksize">Blocksize</label>
+                            <input type="number" class="form-control" name="blocksize"
+                                   ng-model="cluster.blocksize">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.submitTime">SubmitTime</label>
+                            <input type="datetime-local" class="form-control" name="submitTime"
+                                   ng-model="cluster.submitTime" ng-model-options="{timezone: 'UTC'}">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.stopTime">StopTime</label>
+                            <input type="datetime-local" class="form-control" name="stopTime"
+                                   ng-model="cluster.stopTime" ng-model-options="{timezone: 'UTC'}">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.exitStatus">ExitStatus</label>
+                            <input type="number" class="form-control" name="exitStatus"
+                                   ng-model="cluster.exitStatus">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.status">Status</label>
+                            <input type="text" class="form-control" name="status"
+                                   ng-model="cluster.status">
+
+                        </div>
+                        <div class="form-group">
+                            <label translate="hadooprestApp.cluster.username">Username</label>
+                            <input type="text" class="form-control" name="username"
+                                   ng-model="cluster.username">
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+                        </button>
+                        <button type="submit" ng-disabled="editForm.$invalid" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-save"></span>&nbsp;<span translate="entity.action.save">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteClusterConfirmation">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="deleteForm" ng-submit="confirmDelete(cluster.id)">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" translate="entity.delete.title">Confirm delete operation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p translate="hadooprestApp.cluster.delete.question" translate-values="{id: '{{cluster.id}}'}">Are you sure you want to delete this Cluster?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+                        </button>
+                        <button type="submit" ng-disabled="deleteForm.$invalid" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th translate="hadooprestApp.cluster.clustername">Clustername</th>
+                    <th translate="hadooprestApp.cluster.version">Version</th>
+                    <th translate="hadooprestApp.cluster.size">Size</th>
+                    <th translate="hadooprestApp.cluster.replication">Replication</th>
+                    <th translate="hadooprestApp.cluster.blocksize">Blocksize</th>
+                    <th translate="hadooprestApp.cluster.submitTime">SubmitTime</th>
+                    <th translate="hadooprestApp.cluster.stopTime">StopTime</th>
+                    <th translate="hadooprestApp.cluster.exitStatus">ExitStatus</th>
+                    <th translate="hadooprestApp.cluster.status">Status</th>
+                    <th translate="hadooprestApp.cluster.username">Username</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="cluster in clusters">
+                    <td><a ui-sref="clusterDetail({id:cluster.id})">{{cluster.id}}</a></td>
+                    <td>{{cluster.clustername}}</td>
+                    <td>{{cluster.version}}</td>
+                    <td>{{cluster.size}}</td>
+                    <td>{{cluster.replication}}</td>
+                    <td>{{cluster.blocksize}}</td>
+                    <td>{{cluster.submitTime}}</td>
+                    <td>{{cluster.stopTime}}</td>
+                    <td>{{cluster.exitStatus}}</td>
+                    <td>{{cluster.status}}</td>
+                    <td>{{cluster.username}}</td>
+                    <td>
+                        <button type="submit"
+                                ui-sref="clusterDetail({id:cluster.id})"
+                                class="btn btn-info">
+                            <span class="glyphicon glyphicon-eye-open"></span>&nbsp;<span translate="entity.action.view"> View</span>
+                        </button>
+                        <button type="submit"
+                                ng-click="update(cluster.id)"
+                                class="btn btn-primary">
+                            <span class="glyphicon glyphicon-pencil"></span>&nbsp;<span translate="entity.action.edit"> Edit</span>
+                        </button>
+                        <button type="submit"
+                                ng-click="delete(cluster.id)"
+                                class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="entity.action.delete"> Delete</span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

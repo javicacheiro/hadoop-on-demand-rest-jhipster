@@ -13,8 +13,9 @@
                 "title": "Ip"
             },
             "address": "Address",
+            "mask": "Mask",
             "enabled": "Enabled",
-            "user": "user"
+            "username": "Username"
         }
     }
 }

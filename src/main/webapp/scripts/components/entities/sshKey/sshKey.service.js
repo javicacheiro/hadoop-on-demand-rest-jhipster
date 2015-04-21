@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('hadooprestApp')
-    .factory('Key', function ($resource) {
-        return $resource('api/keys/:id', {}, {
+    .factory('SshKey', function ($resource) {
+        return $resource('api/sshKeys/:id', {}, {
             'query': { method: 'GET', isArray: true},
             'get': {
                 method: 'GET',

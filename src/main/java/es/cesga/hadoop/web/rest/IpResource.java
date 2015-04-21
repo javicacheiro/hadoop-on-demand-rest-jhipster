@@ -1,13 +1,9 @@
 package es.cesga.hadoop.web.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-
+import com.codahale.metrics.annotation.Timed;
+import es.cesga.hadoop.domain.Ip;
+import es.cesga.hadoop.repository.IpRepository;
+import es.cesga.hadoop.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -15,20 +11,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.codahale.metrics.annotation.Timed;
-
-import es.cesga.hadoop.domain.Ip;
-import es.cesga.hadoop.repository.IpRepository;
-import es.cesga.hadoop.web.rest.util.PaginationUtil;
+import javax.inject.Inject;
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller for managing Ip.
@@ -50,23 +40,7 @@ public class IpResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> create(@Valid @RequestBody Ip ip) throws URISyntaxException {
-    	
-    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-    	String username;
-    	if (principal instanceof UserDetails) {
-    		username = ((UserDetails)principal).getUsername();
-    		UserDetails user = (UserDetails)principal;
-    		String password = user.getPassword();
-    		log.debug("PASSWORD: {}", password);
-    	} else {
-    		username = principal.toString();
-    	}
-    	
-    	Object credentials = SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        
-    	log.debug("REST request from {}/{} to save Ip : {}", username, credentials.toString(), ip);
-        
+        log.debug("REST request to save Ip : {}", ip);
         if (ip.getId() != null) {
             return ResponseEntity.badRequest().header("Failure", "A new ip cannot already have an ID").build();
         }

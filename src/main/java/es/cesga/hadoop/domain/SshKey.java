@@ -1,23 +1,20 @@
 package es.cesga.hadoop.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
- * A Key.
+ * A SshKey.
  */
 @Entity
-@Table(name = "T_KEY")
+@Table(name = "SSHKEY")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Key implements Serializable {
+public class SshKey implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,9 +29,8 @@ public class Key implements Serializable {
     @Column(name = "enabled")
     private Boolean enabled;
 
-    @JsonIgnore
-    @ManyToOne
-    private User user;
+    @Column(name = "username")
+    private String username;
 
     public Long getId() {
         return id;
@@ -68,12 +64,12 @@ public class Key implements Serializable {
         this.enabled = enabled;
     }
 
-    public User getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -85,9 +81,9 @@ public class Key implements Serializable {
             return false;
         }
 
-        Key key = (Key) o;
+        SshKey sshKey = (SshKey) o;
 
-        if ( ! Objects.equals(id, key.id)) return false;
+        if ( ! Objects.equals(id, sshKey.id)) return false;
 
         return true;
     }
@@ -99,11 +95,12 @@ public class Key implements Serializable {
 
     @Override
     public String toString() {
-        return "Key{" +
+        return "SshKey{" +
                 "id=" + id +
                 ", type='" + type + "'" +
                 ", pubkey='" + pubkey + "'" +
                 ", enabled='" + enabled + "'" +
+                ", username='" + username + "'" +
                 '}';
     }
 }

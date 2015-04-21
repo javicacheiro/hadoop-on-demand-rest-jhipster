@@ -1,11 +1,11 @@
 <div>
 
-    <h2 translate="hadooprestApp.key.home.title">Key</h2>
+    <h2 translate="hadooprestApp.sshKey.home.title">SshKey</h2>
 
-    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveKeyModal" ng-click="clear()">
-        <span class="glyphicon glyphicon-flash"></span> <span translate="hadooprestApp.key.home.createLabel">Create a new Key</span>
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveSshKeyModal" ng-click="clear()">
+        <span class="glyphicon glyphicon-flash"></span> <span translate="hadooprestApp.sshKey.home.createLabel">Create a new SshKey</span>
     </button>
-    <div class="modal fade" id="saveKeyModal" tabindex="-1" role="dialog" aria-labelledby="myKeyLabel"
+    <div class="modal fade" id="saveSshKeyModal" tabindex="-1" role="dialog" aria-labelledby="mySshKeyLabel"
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -14,43 +14,46 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                                 ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myKeyLabel" translate="hadooprestApp.key.home.createOrEditLabel">Create or edit a Key</h4>
+                        <h4 class="modal-title" id="mySshKeyLabel" translate="hadooprestApp.sshKey.home.createOrEditLabel">Create or edit a SshKey</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label>ID</label>
                             <input type="text" class="form-control" name="id"
-                                   ng-model="key.id" readonly>
+                                   ng-model="sshKey.id" readonly>
                         </div>
 
                         <div class="form-group">
-                            <label translate="hadooprestApp.key.type">Type</label>
+                            <label translate="hadooprestApp.sshKey.type">Type</label>
                             <input type="text" class="form-control" name="type"
-                                   ng-model="key.type">
+                                   ng-model="sshKey.type">
 
                             <div ng-show="editForm.type.$invalid">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label translate="hadooprestApp.key.pubkey">Pubkey</label>
+                            <label translate="hadooprestApp.sshKey.pubkey">Pubkey</label>
                             <input type="text" class="form-control" name="pubkey"
-                                   ng-model="key.pubkey">
+                                   ng-model="sshKey.pubkey">
 
                             <div ng-show="editForm.pubkey.$invalid">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label translate="hadooprestApp.key.enabled">Enabled</label>
+                            <label translate="hadooprestApp.sshKey.enabled">Enabled</label>
                             <input type="checkbox" class="form-control" name="enabled"
-                                   ng-model="key.enabled">
+                                   ng-model="sshKey.enabled">
 
                         </div>
-
                         <div class="form-group">
-                            <label translate="hadooprestApp.key.user">user</label>
-                            <select class="form-control" name="user" ng-model="key.user.id" ng-options="user.id as user.login for user in users">
-                            </select>
+                            <label translate="hadooprestApp.sshKey.username">Username</label>
+                            <input type="text" class="form-control" name="username"
+                                   ng-model="sshKey.username">
+
+                            <div ng-show="editForm.username.$invalid">
+                            </div>
                         </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
@@ -65,17 +68,17 @@
         </div>
     </div>
 
-    <div class="modal fade" id="deleteKeyConfirmation">
+    <div class="modal fade" id="deleteSshKeyConfirmation">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="deleteForm" ng-submit="confirmDelete(key.id)">
+                <form name="deleteForm" ng-submit="confirmDelete(sshKey.id)">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                                 ng-click="clear()">&times;</button>
                         <h4 class="modal-title" translate="entity.delete.title">Confirm delete operation</h4>
                     </div>
                     <div class="modal-body">
-                        <p translate="hadooprestApp.key.delete.question" translate-values="{id: '{{key.id}}'}">Are you sure you want to delete this Key?</p>
+                        <p translate="hadooprestApp.sshKey.delete.question" translate-values="{id: '{{sshKey.id}}'}">Are you sure you want to delete this SshKey?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
@@ -95,33 +98,33 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th translate="hadooprestApp.key.type">Type</th>
-                    <th translate="hadooprestApp.key.pubkey">Pubkey</th>
-                    <th translate="hadooprestApp.key.enabled">Enabled</th>
-                    <th translate="hadooprestApp.key.user">user</th>
+                    <th translate="hadooprestApp.sshKey.type">Type</th>
+                    <th translate="hadooprestApp.sshKey.pubkey">Pubkey</th>
+                    <th translate="hadooprestApp.sshKey.enabled">Enabled</th>
+                    <th translate="hadooprestApp.sshKey.username">Username</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="key in keys">
-                    <td><a ui-sref="keyDetail({id:key.id})">{{key.id}}</a></td>
-                    <td>{{key.type}}</td>
-                    <td>{{key.pubkey}}</td>
-                    <td>{{key.enabled}}</td>
-                    <td>{{key.user.login}}</td>
+                <tr ng-repeat="sshKey in sshKeys">
+                    <td><a ui-sref="sshKeyDetail({id:sshKey.id})">{{sshKey.id}}</a></td>
+                    <td>{{sshKey.type}}</td>
+                    <td>{{sshKey.pubkey}}</td>
+                    <td>{{sshKey.enabled}}</td>
+                    <td>{{sshKey.username}}</td>
                     <td>
                         <button type="submit"
-                                ui-sref="keyDetail({id:key.id})"
+                                ui-sref="sshKeyDetail({id:sshKey.id})"
                                 class="btn btn-info">
                             <span class="glyphicon glyphicon-eye-open"></span>&nbsp;<span translate="entity.action.view"> View</span>
                         </button>
                         <button type="submit"
-                                ng-click="update(key.id)"
+                                ng-click="update(sshKey.id)"
                                 class="btn btn-primary">
                             <span class="glyphicon glyphicon-pencil"></span>&nbsp;<span translate="entity.action.edit"> Edit</span>
                         </button>
                         <button type="submit"
-                                ng-click="delete(key.id)"
+                                ng-click="delete(sshKey.id)"
                                 class="btn btn-danger">
                             <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span translate="entity.action.delete"> Delete</span>
                         </button>

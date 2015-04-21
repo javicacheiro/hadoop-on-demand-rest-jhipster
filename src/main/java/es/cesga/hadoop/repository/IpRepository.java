@@ -10,7 +10,4 @@ import java.util.List;
  */
 public interface IpRepository extends JpaRepository<Ip,Long> {
 
-    @Query("select ip from Ip ip where ip.user.login = ?#{principal.username}")
-    List<Ip> findAllForCurrentUser();
-
 }

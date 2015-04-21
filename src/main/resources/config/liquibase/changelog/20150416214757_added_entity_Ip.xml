@@ -11,20 +11,15 @@
         Added the entity Ip.
     -->
     <changeSet id="20150416214757" author="jhipster">
-        <createTable tableName="T_IP">
+        <createTable tableName="IP">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="address" type="varchar(255)"/>
+            <column name="mask" type="integer"/>
             <column name="enabled" type="bit"/>
-            <column name="user_id" type="bigint"/>
+            <column name="username" type="varchar(255)"/>
         </createTable>
         
-        <addForeignKeyConstraint baseColumnNames="user_id"
-                                 baseTableName="T_IP"
-                                 constraintName="fk_ip_user_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="T_USER"/>
-
     </changeSet>
 </databaseChangeLog>

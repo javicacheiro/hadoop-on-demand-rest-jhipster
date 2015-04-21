@@ -32,17 +32,32 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label translate="hadooprestApp.ip.mask">Mask</label>
+                            <input type="number" class="form-control" name="mask"
+                                   ng-model="ip.mask">
+
+                            <div ng-show="editForm.mask.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.mask.$error.number" translate="entity.validation.number">
+                                    This field should be a number.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label translate="hadooprestApp.ip.enabled">Enabled</label>
                             <input type="checkbox" class="form-control" name="enabled"
                                    ng-model="ip.enabled">
 
                         </div>
-
                         <div class="form-group">
-                            <label translate="hadooprestApp.ip.user">user</label>
-                            <select class="form-control" name="user" ng-model="ip.user.id" ng-options="user.id as user.login for user in users">
-                            </select>
+                            <label translate="hadooprestApp.ip.username">Username</label>
+                            <input type="text" class="form-control" name="username"
+                                   ng-model="ip.username">
+
+                            <div ng-show="editForm.username.$invalid">
+                            </div>
                         </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
@@ -88,8 +103,9 @@
                 <tr>
                     <th>ID</th>
                     <th translate="hadooprestApp.ip.address">Address</th>
+                    <th translate="hadooprestApp.ip.mask">Mask</th>
                     <th translate="hadooprestApp.ip.enabled">Enabled</th>
-                    <th translate="hadooprestApp.ip.user">user</th>
+                    <th translate="hadooprestApp.ip.username">Username</th>
                     <th></th>
                 </tr>
             </thead>
@@ -97,8 +113,9 @@
                 <tr ng-repeat="ip in ips">
                     <td><a ui-sref="ipDetail({id:ip.id})">{{ip.id}}</a></td>
                     <td>{{ip.address}}</td>
+                    <td>{{ip.mask}}</td>
                     <td>{{ip.enabled}}</td>
-                    <td>{{ip.user.login}}</td>
+                    <td>{{ip.username}}</td>
                     <td>
                         <button type="submit"
                                 ui-sref="ipDetail({id:ip.id})"

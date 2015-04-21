@@ -70,7 +70,7 @@ class IpGatlingTest extends Simulation {
             .exec(http("Create new ip")
             .put("/api/ips")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "address":"SAMPLE_TEXT", "enabled":null}""")).asJSON
+            .body(StringBody("""{"id":null, "address":"SAMPLE_TEXT", "mask":"0", "enabled":null, "username":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_ip_url")))
             .pause(10)

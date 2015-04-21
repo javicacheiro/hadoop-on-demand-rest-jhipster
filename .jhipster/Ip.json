@@ -1,16 +1,5 @@
 {
-    "relationships": [
-        {
-            "relationshipId": 1,
-            "relationshipName": "user",
-            "relationshipNameCapitalized": "User",
-            "relationshipFieldName": "user",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "otherEntityNameCapitalized": "User",
-            "otherEntityField": "login"
-        }
-    ],
+    "relationships": [],
     "fields": [
         {
             "fieldId": 1,
@@ -23,11 +12,29 @@
         },
         {
             "fieldId": 2,
+            "fieldName": "mask",
+            "fieldType": "Integer",
+            "fieldNameCapitalized": "Mask",
+            "fieldNameUnderscored": "mask",
+            "fieldValidate": true,
+            "fieldValidateRules": []
+        },
+        {
+            "fieldId": 3,
             "fieldName": "enabled",
             "fieldType": "Boolean",
             "fieldNameCapitalized": "Enabled",
             "fieldNameUnderscored": "enabled",
             "fieldValidate": false
+        },
+        {
+            "fieldId": 4,
+            "fieldName": "username",
+            "fieldType": "String",
+            "fieldNameCapitalized": "Username",
+            "fieldNameUnderscored": "username",
+            "fieldValidate": true,
+            "fieldValidateRules": []
         }
     ],
     "fieldsContainOwnerManyToMany": false,

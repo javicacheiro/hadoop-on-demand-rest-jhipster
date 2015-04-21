@@ -7,8 +7,9 @@
             "entities": {
                 "main": "Entités",
                 "ip": "Ip",
-                "key": "Key",
-                "additionalEntity": "JHipster will add addtional entities"
+                "cluster": "Cluster",
+                "sshKey": "SshKey",
+                "additionalEntity": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
                 "main": "Compte",
