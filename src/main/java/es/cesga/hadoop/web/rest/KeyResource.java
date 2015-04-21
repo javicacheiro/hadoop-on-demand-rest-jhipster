@@ -70,7 +70,7 @@ public class KeyResource {
     @Timed
     public List<Key> getAll() {
         log.debug("REST request to get all Keys");
-        return keyRepository.findAll();
+        return keyRepository.findAllForCurrentUser();
     }
 
     /**

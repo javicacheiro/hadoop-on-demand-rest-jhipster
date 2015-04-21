@@ -32,6 +32,7 @@ public class Key implements Serializable {
     @Column(name = "enabled")
     private Boolean enabled;
 
+    @JsonIgnore
     @ManyToOne
     private User user;
 

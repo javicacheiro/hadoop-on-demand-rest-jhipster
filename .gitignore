@@ -117,3 +117,4 @@ Desktop.ini
 *.*~
 *~
 .merge_file*
+/target/
