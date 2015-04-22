@@ -9,5 +9,8 @@ import java.util.List;
  * Spring Data JPA repository for the Ip entity.
  */
 public interface IpRepository extends JpaRepository<Ip,Long> {
+	
+	@Query("select ip from Ip ip where ip.username = ?#{principal.username}")
+	List<Ip> findAllForCurrentUser();
 
 }

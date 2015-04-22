@@ -1,8 +1,11 @@
 package es.cesga.hadoop.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
 import es.cesga.hadoop.domain.SshKey;
+import es.cesga.hadoop.domain.util.AuthUtils;
 import es.cesga.hadoop.repository.SshKeyRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -37,10 +41,11 @@ public class SshKeyResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> create(@Valid @RequestBody SshKey sshKey) throws URISyntaxException {
-        log.debug("REST request to save SshKey : {}", sshKey);
+        log.debug("REST request: {} requests to save SshKey : {}", AuthUtils.getUsername(), sshKey);
         if (sshKey.getId() != null) {
             return ResponseEntity.badRequest().header("Failure", "A new sshKey cannot already have an ID").build();
         }
+        sshKey.setUsername(AuthUtils.getUsername());
         sshKeyRepository.save(sshKey);
         return ResponseEntity.created(new URI("/api/sshKeys/" + sshKey.getId())).build();
     }
@@ -53,10 +58,11 @@ public class SshKeyResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> update(@Valid @RequestBody SshKey sshKey) throws URISyntaxException {
-        log.debug("REST request to update SshKey : {}", sshKey);
+        log.debug("REST request: {} requests to update SshKey : {}", AuthUtils.getUsername(), sshKey);
         if (sshKey.getId() == null) {
             return create(sshKey);
         }
+        sshKey.setUsername(AuthUtils.getUsername());
         sshKeyRepository.save(sshKey);
         return ResponseEntity.ok().build();
     }
@@ -70,7 +76,7 @@ public class SshKeyResource {
     @Timed
     public List<SshKey> getAll() {
         log.debug("REST request to get all SshKeys");
-        return sshKeyRepository.findAll();
+        return sshKeyRepository.findAllForCurrentUser();
     }
 
     /**

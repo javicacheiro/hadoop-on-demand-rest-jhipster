@@ -1,24 +1,29 @@
 package es.cesga.hadoop.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import es.cesga.hadoop.domain.Ip;
-import es.cesga.hadoop.repository.IpRepository;
-import es.cesga.hadoop.web.rest.util.PaginationUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.codahale.metrics.annotation.Timed;
+
+import es.cesga.hadoop.domain.Ip;
+import es.cesga.hadoop.domain.util.AuthUtils;
+import es.cesga.hadoop.repository.IpRepository;
 
 /**
  * REST controller for managing Ip.
@@ -40,10 +45,12 @@ public class IpResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> create(@Valid @RequestBody Ip ip) throws URISyntaxException {
-        log.debug("REST request to save Ip : {}", ip);
+    	log.info("REST request {} requests to save Ip : {}", AuthUtils.getUsername(), ip);
         if (ip.getId() != null) {
             return ResponseEntity.badRequest().header("Failure", "A new ip cannot already have an ID").build();
         }
+        // Add current username information
+        ip.setUsername(AuthUtils.getUsername());
         ipRepository.save(ip);
         return ResponseEntity.created(new URI("/api/ips/" + ip.getId())).build();
     }
@@ -56,10 +63,13 @@ public class IpResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> update(@Valid @RequestBody Ip ip) throws URISyntaxException {
-        log.debug("REST request to update Ip : {}", ip);
+    	
+        log.info("REST request {} requests to update Ip : {}", AuthUtils.getUsername(), ip);
         if (ip.getId() == null) {
             return create(ip);
         }
+        // Add current username information
+        ip.setUsername(AuthUtils.getUsername());
         ipRepository.save(ip);
         return ResponseEntity.ok().build();
     }
@@ -71,12 +81,9 @@ public class IpResource {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<Ip>> getAll(@RequestParam(value = "page" , required = false) Integer offset,
-                                  @RequestParam(value = "per_page", required = false) Integer limit)
-        throws URISyntaxException {
-        Page<Ip> page = ipRepository.findAll(PaginationUtil.generatePageRequest(offset, limit));
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/ips", offset, limit);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    public List<Ip> getAll() {
+    	log.debug("REST {} request to get all Ip", AuthUtils.getUsername());
+        return ipRepository.findAllForCurrentUser();
     }
 
     /**

@@ -1,5 +1,6 @@
 package es.cesga.hadoop.domain;
-
+ 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -16,19 +17,25 @@ import java.util.Objects;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Ip implements Serializable {
 
-    @Id
+ 	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
+    @Pattern(regexp = "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.\\d{1,3}$")
     @Column(name = "address")
     private String address;
 
+    @NotNull
     @Column(name = "mask")
     private Integer mask;
 
     @Column(name = "enabled")
     private Boolean enabled;
 
+    @JsonIgnore
     @Column(name = "username")
     private String username;
 

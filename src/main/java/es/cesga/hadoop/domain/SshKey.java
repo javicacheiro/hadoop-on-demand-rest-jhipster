@@ -3,8 +3,11 @@ package es.cesga.hadoop.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -16,19 +19,23 @@ import java.util.Objects;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class SshKey implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "type")
     private String type;
 
+    @NotNull
     @Column(name = "pubkey")
     private String pubkey;
 
     @Column(name = "enabled")
     private Boolean enabled;
 
+    @JsonIgnore
     @Column(name = "username")
     private String username;
 
