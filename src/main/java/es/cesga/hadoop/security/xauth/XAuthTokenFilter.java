@@ -1,18 +1,21 @@
 package es.cesga.hadoop.security.xauth;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.GenericFilterBean;
+import java.io.IOException;
+import java.util.Collection;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.GenericFilterBean;
 
 /**
  * Filters incoming requests and installs a Spring Security principal
@@ -33,20 +36,19 @@ public class XAuthTokenFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        try {
-            HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-            String authToken = httpServletRequest.getHeader(XAUTH_TOKEN_HEADER_NAME);
-            if (StringUtils.hasText(authToken)) {
-                String username = this.tokenProvider.getUserNameFromToken(authToken);
-                UserDetails details = this.detailsService.loadUserByUsername(username);
-                if (this.tokenProvider.validateToken(authToken, details)) {
-                    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(details, details.getPassword(), details.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(token);
-                }
-            }
-            filterChain.doFilter(servletRequest, servletResponse);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+    	HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+    	String authToken = httpServletRequest.getHeader(XAUTH_TOKEN_HEADER_NAME);
+
+    	if (StringUtils.hasText(authToken) && tokenProvider.validateToken(authToken)) {
+    		String username = tokenProvider.getUserNameFromToken(authToken);
+    		String password = tokenProvider.getPasswordFromToken(authToken);
+    		Collection<GrantedAuthority> grantedAuthorities = tokenProvider.getGrantedAuthoritiesFromToken(authToken);
+
+    		UserDetails details = new org.springframework.security.core.userdetails.User(username, password, grantedAuthorities);
+
+    		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(details, details.getPassword(), details.getAuthorities());
+    		SecurityContextHolder.getContext().setAuthentication(token);
+    	}
+    	filterChain.doFilter(servletRequest, servletResponse);
     }
 }

@@ -1,19 +1,24 @@
 package es.cesga.hadoop;
 
 import es.cesga.hadoop.config.Constants;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
+
 import com.google.common.base.Joiner;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -47,6 +52,7 @@ public class Application {
      * Main method, used to run the application.
      */
     public static void main(String[] args) throws UnknownHostException {
+    	
         SpringApplication app = new SpringApplication(Application.class);
         app.setShowBanner(false);
 

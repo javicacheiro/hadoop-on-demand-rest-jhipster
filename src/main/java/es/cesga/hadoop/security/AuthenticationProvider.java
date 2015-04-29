@@ -1,7 +1,11 @@
 package es.cesga.hadoop.security;
 
+import static org.springframework.ldap.query.LdapQueryBuilder.query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +25,7 @@ public class AuthenticationProvider implements org.springframework.security.auth
     private PasswordEncoder passwordEncoder;
 
     private UserDetailsService userDetailsService;
-
+    
     public AuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
@@ -33,6 +37,7 @@ public class AuthenticationProvider implements org.springframework.security.auth
                 (UsernamePasswordAuthenticationToken) authentication;
 
         String login = token.getName();
+        
         UserDetails user = userDetailsService.loadUserByUsername(login);
         if (user == null) {
             throw new UsernameNotFoundException("User does not exists");

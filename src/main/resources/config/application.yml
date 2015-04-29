@@ -28,6 +28,9 @@ authentication:
         secret: myXAuthSecret
         # Token is valid 30 minutes
         tokenValidityInSeconds: 1800
+    ldap:
+        url: ldap://localhost
+        base: dc=cesga,dc=es
 
 swagger:
     title: hadooprest API
