@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 
 import es.cesga.hadoop.domain.Ip;
-import es.cesga.hadoop.domain.util.AuthUtils;
+import es.cesga.hadoop.domain.util.AuthUtilsBean;
 import es.cesga.hadoop.repository.IpRepository;
 
 /**
@@ -36,6 +36,9 @@ public class IpResource {
 
     @Inject
     private IpRepository ipRepository;
+    
+    @Inject
+    private AuthUtilsBean auth;
 
     /**
      * POST  /ips -> Create a new ip.
@@ -45,12 +48,12 @@ public class IpResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> create(@Valid @RequestBody Ip ip) throws URISyntaxException {
-    	log.info("REST request {} requests to save Ip : {}", AuthUtils.getUsername(), ip);
+    	log.info("REST request {} requests to save Ip : {}", auth.getUsername(), ip);
         if (ip.getId() != null) {
             return ResponseEntity.badRequest().header("Failure", "A new ip cannot already have an ID").build();
         }
         // Add current username information
-        ip.setUsername(AuthUtils.getUsername());
+        ip.setUsername(auth.getUsername());
         ipRepository.save(ip);
         return ResponseEntity.created(new URI("/api/ips/" + ip.getId())).build();
     }
@@ -64,12 +67,13 @@ public class IpResource {
     @Timed
     public ResponseEntity<Void> update(@Valid @RequestBody Ip ip) throws URISyntaxException {
     	
-        log.info("REST request {} requests to update Ip : {}", AuthUtils.getUsername(), ip);
+        log.info("REST request {} requests to update Ip : {}", auth.getUsername(), ip);
         if (ip.getId() == null) {
             return create(ip);
         }
         // Add current username information
-        ip.setUsername(AuthUtils.getUsername());
+        ip.setUsername(auth.getUsername());
+        //FIXME: Before saving verify that the ip referenced by the ID belongs to this user 
         ipRepository.save(ip);
         return ResponseEntity.ok().build();
     }
@@ -82,7 +86,7 @@ public class IpResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public List<Ip> getAll() {
-    	log.debug("REST {} request to get all Ip", AuthUtils.getUsername());
+    	log.debug("REST {} requests to get all Ips", auth.getUsername());
         return ipRepository.findAllForCurrentUser();
     }
 
@@ -94,7 +98,7 @@ public class IpResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Ip> get(@PathVariable Long id) {
-        log.debug("REST request to get Ip : {}", id);
+        log.debug("REST {} requests to get Ip : {}", auth.getUsername(), id);
         return Optional.ofNullable(ipRepository.findOne(id))
             .map(ip -> new ResponseEntity<>(
                 ip,
@@ -111,6 +115,7 @@ public class IpResource {
     @Timed
     public void delete(@PathVariable Long id) {
         log.debug("REST request to delete Ip : {}", id);
+        //FIXME: Before saving verify that the ip referenced by the ID belongs to this user
         ipRepository.delete(id);
     }
 }

@@ -363,6 +363,11 @@
             <artifactId>jasypt</artifactId>
             <version>${jasypt.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
