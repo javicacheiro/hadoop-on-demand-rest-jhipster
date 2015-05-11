@@ -39,3 +39,5 @@ swagger:
     contact:
     license: Apache 2.0
     licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
+
+cloud.opennebula.xml-rpc: http://localhost:2633/RPC2

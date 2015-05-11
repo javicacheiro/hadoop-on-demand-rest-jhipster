@@ -50,6 +50,7 @@
         <usertype-core.version>3.2.0.GA</usertype-core.version>
         <spring-ldap-core.version>2.0.2.RELEASE</spring-ldap-core.version>
         <jasypt.version>1.9.2</jasypt.version>
+        <xmlrpc.version>3.1.3</xmlrpc.version>
     </properties>
 
     <dependencies>
@@ -366,8 +367,19 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-            <version>${spring-security.version}</version>
         </dependency>
+		<dependency>
+			<groupId>org.opennebula</groupId>
+			<artifactId>client</artifactId>
+			<version>4.10.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/lib/org.opennebula.client.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlrpc</groupId>
+			<artifactId>xmlrpc-client</artifactId>
+			<version>${xmlrpc.version}</version>
+		</dependency>
     </dependencies>
     <build>
         <resources>

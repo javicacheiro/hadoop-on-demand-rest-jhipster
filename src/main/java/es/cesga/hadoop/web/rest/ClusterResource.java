@@ -1,8 +1,11 @@
 package es.cesga.hadoop.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
 import es.cesga.hadoop.domain.Cluster;
 import es.cesga.hadoop.repository.ClusterRepository;
+import es.cesga.hadoop.service.CloudProvider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -27,6 +31,9 @@ public class ClusterResource {
 
     @Inject
     private ClusterRepository clusterRepository;
+    
+    @Inject
+    private CloudProvider cloudProvider;
 
     /**
      * POST  /clusters -> Create a new cluster.
@@ -69,7 +76,8 @@ public class ClusterResource {
     @Timed
     public List<Cluster> getAll() {
         log.debug("REST request to get all Clusters");
-        return clusterRepository.findAll();
+        //return clusterRepository.findAll();
+        return cloudProvider.findAll();
     }
 
     /**
@@ -79,13 +87,19 @@ public class ClusterResource {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Cluster> get(@PathVariable Long id) {
+    public ResponseEntity<Cluster> get(@PathVariable int id) {
         log.debug("REST request to get Cluster : {}", id);
-        return Optional.ofNullable(clusterRepository.findOne(id))
-            .map(cluster -> new ResponseEntity<>(
-                cluster,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        //return cloudProvider.show(id);
+      return Optional.ofNullable(cloudProvider.show(id))
+      .map(cluster -> new ResponseEntity<>(
+          cluster,
+          HttpStatus.OK))
+      .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//        return Optional.ofNullable(clusterRepository.findOne(id))
+//            .map(cluster -> new ResponseEntity<>(
+//                cluster,
+//                HttpStatus.OK))
+//            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
