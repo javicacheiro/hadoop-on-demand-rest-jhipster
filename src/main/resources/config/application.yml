@@ -26,10 +26,10 @@ mail:
 authentication:
     xauth:
         secret: myXAuthSecret
-        # Token is valid 30 minutes
-        tokenValidityInSeconds: 1800
+        # Token is valid 2 hours
+        tokenValidityInSeconds: 7200
     ldap:
-        url: ldap://localhost
+        url: ldap://84.21.168.242
         base: dc=cesga,dc=es
 
 swagger:
@@ -40,4 +40,4 @@ swagger:
     license: Apache 2.0
     licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
 
-cloud.opennebula.xml-rpc: http://localhost:2633/RPC2
+cloud.opennebula.xml-rpc: http://cloud.cesga.es:2633/RPC2
