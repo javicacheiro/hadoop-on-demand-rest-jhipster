@@ -2,12 +2,16 @@ package es.cesga.hadoop.web.rest;
 
 import es.cesga.hadoop.Application;
 import es.cesga.hadoop.domain.SshKey;
+import es.cesga.hadoop.domain.util.AuthUtilsBean;
 import es.cesga.hadoop.repository.SshKeyRepository;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.hamcrest.Matchers.hasItem;
+
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -54,13 +58,18 @@ public class SshKeyResourceTest {
     private MockMvc restSshKeyMockMvc;
 
     private SshKey sshKey;
-
+    
+    @Mock
+    private AuthUtilsBean auth;
+    
     @PostConstruct
     public void setup() {
         MockitoAnnotations.initMocks(this);
         SshKeyResource sshKeyResource = new SshKeyResource();
         ReflectionTestUtils.setField(sshKeyResource, "sshKeyRepository", sshKeyRepository);
+        ReflectionTestUtils.setField(sshKeyResource, "auth", auth);
         this.restSshKeyMockMvc = MockMvcBuilders.standaloneSetup(sshKeyResource).build();
+        Mockito.when(auth.getUsername()).thenReturn(DEFAULT_USERNAME);
     }
 
     @Before
@@ -90,7 +99,6 @@ public class SshKeyResourceTest {
         assertThat(testSshKey.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testSshKey.getPubkey()).isEqualTo(DEFAULT_PUBKEY);
         assertThat(testSshKey.getEnabled()).isEqualTo(DEFAULT_ENABLED);
-        assertThat(testSshKey.getUsername()).isEqualTo(DEFAULT_USERNAME);
     }
 
     @Test
@@ -107,7 +115,7 @@ public class SshKeyResourceTest {
                 .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
                 .andExpect(jsonPath("$.[*].pubkey").value(hasItem(DEFAULT_PUBKEY.toString())))
                 .andExpect(jsonPath("$.[*].enabled").value(hasItem(DEFAULT_ENABLED.booleanValue())))
-                .andExpect(jsonPath("$.[*].username").value(hasItem(DEFAULT_USERNAME.toString())));
+                .andExpect(jsonPath("$.[*].username").doesNotExist());
     }
 
     @Test
@@ -124,7 +132,7 @@ public class SshKeyResourceTest {
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.pubkey").value(DEFAULT_PUBKEY.toString()))
             .andExpect(jsonPath("$.enabled").value(DEFAULT_ENABLED.booleanValue()))
-            .andExpect(jsonPath("$.username").value(DEFAULT_USERNAME.toString()));
+            .andExpect(jsonPath("$.username").doesNotExist());
     }
 
     @Test
@@ -147,8 +155,7 @@ public class SshKeyResourceTest {
         sshKey.setType(UPDATED_TYPE);
         sshKey.setPubkey(UPDATED_PUBKEY);
         sshKey.setEnabled(UPDATED_ENABLED);
-        sshKey.setUsername(UPDATED_USERNAME);
-        restSshKeyMockMvc.perform(put("/api/sshKeys")
+        restSshKeyMockMvc.perform(put("/api/sshKeys/{id}", sshKey.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(sshKey)))
                 .andExpect(status().isOk());
@@ -160,13 +167,13 @@ public class SshKeyResourceTest {
         assertThat(testSshKey.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testSshKey.getPubkey()).isEqualTo(UPDATED_PUBKEY);
         assertThat(testSshKey.getEnabled()).isEqualTo(UPDATED_ENABLED);
-        assertThat(testSshKey.getUsername()).isEqualTo(UPDATED_USERNAME);
     }
 
     @Test
     @Transactional
     public void deleteSshKey() throws Exception {
         // Initialize the database
+    	sshKey.setUsername(auth.getUsername());
         sshKeyRepository.saveAndFlush(sshKey);
 		
 		int databaseSizeBeforeDelete = sshKeyRepository.findAll().size();

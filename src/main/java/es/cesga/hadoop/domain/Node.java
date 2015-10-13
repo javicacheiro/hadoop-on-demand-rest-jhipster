@@ -1,14 +1,11 @@
 package es.cesga.hadoop.domain;
 
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -29,10 +26,10 @@ public class Node {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer node_id;
       
-    @Column(name = "nodeid")
-    private Integer nodeid;
+    @Column(name = "node_in_system_id")
+    private Integer node_in_system_id;
     
     @Column(name = "name")
     private String name;
@@ -43,9 +40,15 @@ public class Node {
     @Column(name = "status")
     private String status;
     
-    @ManyToOne
-    @JoinColumn(name = "clusterid")
-    private Cluster cluster;
+    @Column(name = "username")
+    private String username;
+    
+//    @ManyToOne
+//    @JoinColumn(name = "cluster_id")
+//    private Cluster cluster_id;
+    
+    @Column(name = "cluster_id")
+    private Integer cluster_id;
     
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @JsonSerialize(using = CustomDateTimeSerializer.class)
@@ -75,20 +78,20 @@ public class Node {
     
 
 
-	public Long getId() {
-		return id;
+	public Integer getId() {
+		return node_id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(Integer node_id) {
+		this.node_id = node_id;
 	}
 
-	public Integer getNodeid() {
-		return nodeid;
+	public Integer getNodeInSystemId() {
+		return node_in_system_id;
 	}
 
-	public void setNodeid(Integer nodeid) {
-		this.nodeid = nodeid;
+	public void setNodeInSystemId(Integer node_in_system_id) {
+		this.node_in_system_id = node_in_system_id;
 	}
 
 	public String getStatus() {
@@ -99,12 +102,12 @@ public class Node {
 		this.status = status;
 	}
 
-	public Cluster getCluster() {
-		return cluster;
+	public Integer getClusterId() {
+		return cluster_id;
 	}
 
-	public void setCluster(Cluster cluster) {
-		this.cluster = cluster;
+	public void setCluster(Integer clusterid) {
+		this.cluster_id = clusterid;
 	}
 
 	public DateTime getStartTime() {
@@ -163,6 +166,14 @@ public class Node {
 		this.name = name;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
 	public String getIp() {
 		return ip;
 	}
@@ -176,7 +187,7 @@ public class Node {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((host == null) ? 0 : host.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((node_id == null) ? 0 : node_id.hashCode());
 		result = prime * result + ((ip == null) ? 0 : ip.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
@@ -184,7 +195,7 @@ public class Node {
 		result = prime * result + ((umem == null) ? 0 : umem.hashCode());
 		result = prime * result
 				+ ((uptimeSeconds == null) ? 0 : uptimeSeconds.hashCode());
-		result = prime * result + ((nodeid == null) ? 0 : nodeid.hashCode());
+		result = prime * result + ((node_in_system_id == null) ? 0 : node_in_system_id.hashCode());
 		return result;
 	}
 
@@ -202,10 +213,10 @@ public class Node {
 				return false;
 		} else if (!host.equals(other.host))
 			return false;
-		if (id == null) {
-			if (other.id != null)
+		if (node_id == null) {
+			if (other.node_id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!node_id.equals(other.node_id))
 			return false;
 		if (ip == null) {
 			if (other.ip != null)
@@ -237,17 +248,17 @@ public class Node {
 				return false;
 		} else if (!uptimeSeconds.equals(other.uptimeSeconds))
 			return false;
-		if (nodeid == null) {
-			if (other.nodeid != null)
+		if (node_in_system_id == null) {
+			if (other.node_in_system_id != null)
 				return false;
-		} else if (!nodeid.equals(other.nodeid))
+		} else if (!node_in_system_id.equals(other.node_in_system_id))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Node [id=" + id + ", nodeid=" + nodeid + ", status=" + status
+		return "Node [id=" + node_id + ", nodeid=" + node_in_system_id + ", status=" + status
 				+ ", ucpu=" + ucpu + ", umem=" + umem + ", host=" + host
 				+ ", uptimeSeconds=" + uptimeSeconds + ", name=" + name
 				+ ", ip=" + ip + "]";

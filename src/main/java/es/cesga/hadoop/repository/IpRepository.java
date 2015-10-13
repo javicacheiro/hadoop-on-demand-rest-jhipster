@@ -12,5 +12,15 @@ public interface IpRepository extends JpaRepository<Ip,Long> {
 	
 	@Query("select ip from Ip ip where ip.username = ?#{principal.username}")
 	List<Ip> findAllForCurrentUser();
-
+	
+	@Query("select ip from Ip ip where ip.username = ?1")
+	List<Ip> findAllForUser(String username);
+	
+	@Query("select ip from Ip ip where ip.username = ?1 and ip.enabled = true")
+	List<Ip> findAllEnabledIPsForUser(String username);
+	
+	@Override
+	@Query("select ip from Ip ip where ip.username = ?#{principal.username}")
+	List<Ip> findAll();
+	
 }

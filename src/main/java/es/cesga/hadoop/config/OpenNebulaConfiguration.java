@@ -39,8 +39,6 @@ public class OpenNebulaConfiguration implements EnvironmentAware {
         cloudProvider = new OpenNebulaProvider(endpoint);
             	
     	return cloudProvider;
-    	
-
     }
 
 }

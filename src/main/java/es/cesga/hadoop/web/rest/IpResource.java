@@ -23,7 +23,12 @@ import com.codahale.metrics.annotation.Timed;
 
 import es.cesga.hadoop.domain.Ip;
 import es.cesga.hadoop.domain.util.AuthUtilsBean;
+import es.cesga.hadoop.domain.util.IPAddAllEnabledThread;
+import es.cesga.hadoop.domain.util.IPAddThread;
+import es.cesga.hadoop.domain.util.IPDelThread;
+import es.cesga.hadoop.repository.ClusterRepository;
 import es.cesga.hadoop.repository.IpRepository;
+import es.cesga.hadoop.repository.NodeRepository;
 
 /**
  * REST controller for managing Ip.
@@ -38,48 +43,20 @@ public class IpResource {
     private IpRepository ipRepository;
     
     @Inject
+    private ClusterRepository clusterRepository;
+
+    @Inject
+    private NodeRepository nodeRepository;
+    
+    @Inject
     private AuthUtilsBean auth;
 
+    
     /**
-     * POST  /ips -> Create a new ip.
-     */
-    @RequestMapping(value = "/ips",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> create(@Valid @RequestBody Ip ip) throws URISyntaxException {
-    	log.info("REST request {} requests to save Ip : {}", auth.getUsername(), ip);
-        if (ip.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new ip cannot already have an ID").build();
-        }
-        // Add current username information
-        ip.setUsername(auth.getUsername());
-        ipRepository.save(ip);
-        return ResponseEntity.created(new URI("/api/ips/" + ip.getId())).build();
-    }
-
-    /**
-     * PUT  /ips -> Updates an existing ip.
-     */
-    @RequestMapping(value = "/ips",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> update(@Valid @RequestBody Ip ip) throws URISyntaxException {
-    	
-        log.info("REST request {} requests to update Ip : {}", auth.getUsername(), ip);
-        if (ip.getId() == null) {
-            return create(ip);
-        }
-        // Add current username information
-        ip.setUsername(auth.getUsername());
-        //FIXME: Before saving verify that the ip referenced by the ID belongs to this user 
-        ipRepository.save(ip);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * GET  /ips -> get all the ips.
+     * GET  /ips 
+     * 
+     * -> "getIPs" method
+     * -> get all the ips.
      */
     @RequestMapping(value = "/ips",
             method = RequestMethod.GET,
@@ -87,11 +64,15 @@ public class IpResource {
     @Timed
     public List<Ip> getAll() {
     	log.debug("REST {} requests to get all Ips", auth.getUsername());
-        return ipRepository.findAllForCurrentUser();
+        //return ipRepository.findAllForCurrentUser();
+    	return ipRepository.findAllForUser(auth.getUsername());
     }
 
     /**
-     * GET  /ips/:id -> get the "id" ip.
+     * GET  /ips/{id}
+     * 
+     * -> "getIP" method
+     * -> get the "id" ip.
      */
     @RequestMapping(value = "/ips/{id}",
             method = RequestMethod.GET,
@@ -105,17 +86,105 @@ public class IpResource {
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+    
+    
+    /**
+     * POST  /ips 
+     * 
+     * -> "addIP" method
+     * -> Create a new ip.
+     */
+    @RequestMapping(value = "/ips",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> create(@Valid @RequestBody Ip ip) throws URISyntaxException {
+    	log.info("REST request {} requests to save Ip : {}", auth.getUsername(), ip);
+
+        // Add current username information
+        ip.setUsername(auth.getUsername());
+        ip = ipRepository.save(ip);
+        
+		// Add IP to all the clusters
+		new IPAddThread(auth.getUsername(), clusterRepository, nodeRepository, ip).start();
+        
+        return ResponseEntity.created(new URI("/api/ips/" + ip.getId())).build();
+    }
 
     /**
-     * DELETE  /ips/:id -> delete the "id" ip.
+     * PUT  /ips/{id}
+     * 
+     * -> "editIP" method
+     * -> Updates an existing ip.
+     */
+    @RequestMapping(value = "/ips/{id}",
+        method = RequestMethod.PUT,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody Ip ip) throws URISyntaxException {
+        log.info("REST request {} requests to update Ip : {}", auth.getUsername(), ip);
+        Ip existingIP = ipRepository.findOne(id);
+        
+        if(existingIP == null){
+        	//The IP doesn't exist
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
+        if(! existingIP.getUsername().equals(auth.getUsername())){
+        	//The IP doesn't belong to this user
+        	return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+        if(existingIP.getEnabled() == ip.getEnabled()){
+        	//No changes to be made
+        	return ResponseEntity.ok().build();
+        }
+        
+        //Save the modified IP in the database
+        existingIP.setEnabled(ip.getEnabled());
+        ipRepository.save(existingIP);
+        
+        //Synchronize the IP
+        if(existingIP.getEnabled()){
+    		new IPAddThread(auth.getUsername(), clusterRepository, nodeRepository, existingIP).start();
+        }else{
+        	new IPDelThread(auth.getUsername(), clusterRepository, nodeRepository, existingIP).start();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    
+    /**
+     * DELETE  /ips/{id} 
+     * 
+     * -> "remIP" method
+     * -> delete the "id" ip.
      */
     @RequestMapping(value = "/ips/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Ip : {}", id);
-        //FIXME: Before saving verify that the ip referenced by the ID belongs to this user
+        Ip existingIP = ipRepository.findOne(id);
+        
+        if(existingIP == null){
+        	//The IP doesn't exist
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
+        if(! existingIP.getUsername().equals(auth.getUsername())){
+        	//The IP doesn't belong to this user
+        	return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+        //Delete the Ip from the database
         ipRepository.delete(id);
+        
+		//Remove the ip from the clusters
+		new IPDelThread(auth.getUsername(), clusterRepository, nodeRepository, existingIP).start();
+        
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

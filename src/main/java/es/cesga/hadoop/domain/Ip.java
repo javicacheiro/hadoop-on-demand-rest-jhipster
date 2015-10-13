@@ -31,7 +31,8 @@ public class Ip implements Serializable {
     @NotNull
     @Column(name = "mask")
     private Integer mask;
-
+    
+    @NotNull
     @Column(name = "enabled")
     private Boolean enabled;
 

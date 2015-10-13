@@ -17,7 +17,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
+import javax.inject.Inject;
+
 import es.cesga.hadoop.async.ExceptionHandlingAsyncTaskExecutor;
+import es.cesga.hadoop.domain.util.AsyncProcessExitHandlerThread;
+import es.cesga.hadoop.repository.ClusterRepository;
+import es.cesga.hadoop.repository.NodeRepository;
 
 @Configuration
 @EnableAsync
@@ -46,6 +51,13 @@ public class AsyncConfiguration implements AsyncConfigurer, EnvironmentAware {
         return new ExceptionHandlingAsyncTaskExecutor(executor);
     }
 
+//    @Bean
+//    public AsyncProcessExitHandlerThread getAsyncProcessExitHandlerThread() {
+//        log.debug("Creating AsyncProcessExitHandlerThread");
+//        return new AsyncProcessExitHandlerThread();
+//    }
+
+    
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new SimpleAsyncUncaughtExceptionHandler();

@@ -11,12 +11,19 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -31,41 +38,64 @@ import es.cesga.hadoop.domain.util.CustomDateTimeSerializer;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Cluster implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+    @Column(name="cluster_id")
+    private Integer cluster_id;
+    
+    
     @Column(name = "username")
     private String username;
     
-    @Column(name = "clusterid")
-    private Integer clusterid;
     
+    @Min(1)
+    @Max(9999)
+    @Column(name = "cluster_in_system_id")
+    private Integer cluster_in_system_id;
+    
+    
+    //String composed by chars, numbers and the "-_" punct chars. No whitespaces allowed.
+    @Pattern(regexp = "^[a-zA-Z_\\-0-9]*$",
+    		message="The clustername can only contain characters, numbers and \"_-\". No whitespaces allowed.")
+    @NotNull
     @Column(name = "clustername")
     private String clustername;
 
-    @OneToMany(mappedBy = "nodeid")
-    @OrderBy
-    List<Node> nodes;
+    
+//    @OneToMany(mappedBy = "cluster_id")
+//    @OrderBy
+//    List<Node> nodes;
+    
+    
     
     /**
      * Requested properties at launch time
      */
+    @Min(1)
+    @Max(99)
+    @NotNull
     @Column(name = "size")
     private Integer size;
-
+    
+    @NotNull
+    @Min(1)
+    @Max(5)
     @Column(name = "replication")
     private Integer replication;
 
+    @NotNull
     @Column(name = "blocksize")
     private Integer blocksize;
 
-    @Column(name = "exit_status")
-    private Integer exitStatus;
     
     /**
      * Audit fields
      */
+    @Column(name = "exit_status")
+    private Integer exitStatus;
+    
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
@@ -78,59 +108,13 @@ public class Cluster implements Serializable {
     @Column(name = "stop_time")
     private DateTime stopTime;
 
-    /**
-     * Properties obtained from jobtracker.jsp
-     */
-    @Column(name = "jobtracker_status")
-    private String jobtrackerStatus;
-    
-    @Column(name = "version")
-    private String version;
-    
-    @Column(name = "safemode")
-    private String safeMode;
-    
-    @Column(name = "tasktracker_nodes")
-    private Integer tasktrackerNodes;
-    
-    @Column(name = "blacklisted_nodes")
-    private Integer blacklistedNodes;
-    
-    @Column(name = "graylisted_nodes")
-    private Integer graylistedNodes;
-
-    /**
-     * Properties obtained from dfshealth.jsp
-     */
-    @Column(name = "hdfs_status")
-    private String hdfsStatus;
-    
-    @Column(name = "capacity")
-    private Float hdfsCapacity;
-    
-    @Column(name = "hdfs_used_percentage")
-    private Float hdfsUsedPercentage;
-    
-    @Column(name = "hdfs_nodes")
-    private Integer hdfsNodes;
-    
-    @Column(name = "hdfs_dead_nodes")
-    private Integer hdfsDeadNodes;
-    
-    @Column(name = "hdfs_decommmissioned_nodes")
-    private Integer hdfsDecommissionedNodes;
-    
-    @Column(name = "hdfs_under_replicated_blocks")
-    private Integer hdfsUnderreplicatedBlocks;
-    
-
- 
-    public Long getId() {
-		return id;
+        
+    public Integer getId() {
+		return cluster_id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(Integer cluster_id) {
+		this.cluster_id = cluster_id;
 	}
 
 	public String getUsername() {
@@ -141,20 +125,12 @@ public class Cluster implements Serializable {
 		this.username = username;
 	}
 
-	public Integer getClusterid() {
-		return clusterid;
+	public int getCluster_In_System_Id() {
+		return cluster_in_system_id;
 	}
 
-	public void setClusterid(Integer clusterid) {
-		this.clusterid = clusterid;
-	}
-
-	public List<Node> getNodes() {
-		return nodes;
-	}
-
-	public void setNodes(List<Node> nodes) {
-		this.nodes = nodes;
+	public void setCluster_In_System_Id(int cluster_in_system_id) {
+		this.cluster_in_system_id = cluster_in_system_id;
 	}
 
 	public String getClustername() {
@@ -173,19 +149,19 @@ public class Cluster implements Serializable {
 		this.size = size;
 	}
 
-	public Integer getReplication() {
+	public Integer getDfsReplicas() {
 		return replication;
 	}
 
-	public void setReplication(Integer replication) {
+	public void setDfsReplicas(Integer replication) {
 		this.replication = replication;
 	}
 
-	public Integer getBlocksize() {
+	public Integer getDfsBlocksize() {
 		return blocksize;
 	}
 
-	public void setBlocksize(Integer blocksize) {
+	public void setDfsBlocksize(Integer blocksize) {
 		this.blocksize = blocksize;
 	}
 
@@ -212,111 +188,6 @@ public class Cluster implements Serializable {
 	public void setStopTime(DateTime stopTime) {
 		this.stopTime = stopTime;
 	}
-
-	public String getJobtrackerStatus() {
-		return jobtrackerStatus;
-	}
-
-	public void setJobtrackerStatus(String jobtrackerStatus) {
-		this.jobtrackerStatus = jobtrackerStatus;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	public String getSafeMode() {
-		return safeMode;
-	}
-
-	public void setSafeMode(String safeMode) {
-		this.safeMode = safeMode;
-	}
-
-	public Integer getTasktrackerNodes() {
-		return tasktrackerNodes;
-	}
-
-	public void setTasktrackerNodes(Integer tasktrackerNodes) {
-		this.tasktrackerNodes = tasktrackerNodes;
-	}
-
-	public Integer getBlacklistedNodes() {
-		return blacklistedNodes;
-	}
-
-	public void setBlacklistedNodes(Integer blacklistedNodes) {
-		this.blacklistedNodes = blacklistedNodes;
-	}
-
-	public Integer getGraylistedNodes() {
-		return graylistedNodes;
-	}
-
-	public void setGraylistedNodes(Integer graylistedNodes) {
-		this.graylistedNodes = graylistedNodes;
-	}
-
-	public String getHdfsStatus() {
-		return hdfsStatus;
-	}
-
-	public void setHdfsStatus(String hdfsStatus) {
-		this.hdfsStatus = hdfsStatus;
-	}
-
-	public Float getHdfsCapacity() {
-		return hdfsCapacity;
-	}
-
-	public void setHdfsCapacity(Float hdfsCapacity) {
-		this.hdfsCapacity = hdfsCapacity;
-	}
-
-	public Float getHdfsUsedPercentage() {
-		return hdfsUsedPercentage;
-	}
-
-	public void setHdfsUsedPercentage(Float hdfsUsedPercentage) {
-		this.hdfsUsedPercentage = hdfsUsedPercentage;
-	}
-
-	public Integer getHdfsNodes() {
-		return hdfsNodes;
-	}
-
-	public void setHdfsNodes(Integer hdfsNodes) {
-		this.hdfsNodes = hdfsNodes;
-	}
-
-	public Integer getHdfsDeadNodes() {
-		return hdfsDeadNodes;
-	}
-
-	public void setHdfsDeadNodes(Integer hdfsDeadNodes) {
-		this.hdfsDeadNodes = hdfsDeadNodes;
-	}
-
-	public Integer getHdfsDecommissionedNodes() {
-		return hdfsDecommissionedNodes;
-	}
-
-	public void setHdfsDecommissionedNodes(Integer hdfsDecommissionedNodes) {
-		this.hdfsDecommissionedNodes = hdfsDecommissionedNodes;
-	}
-
-	public Integer getHdfsUnderreplicatedBlocks() {
-		return hdfsUnderreplicatedBlocks;
-	}
-
-	public void setHdfsUnderreplicatedBlocks(Integer hdfsUnderreplicatedBlocks) {
-		this.hdfsUnderreplicatedBlocks = hdfsUnderreplicatedBlocks;
-	}
-
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -327,11 +198,7 @@ public class Cluster implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Cluster other = (Cluster) obj;
-		if (blacklistedNodes == null) {
-			if (other.blacklistedNodes != null)
-				return false;
-		} else if (!blacklistedNodes.equals(other.blacklistedNodes))
-			return false;
+		
 		if (blocksize == null) {
 			if (other.blocksize != null)
 				return false;
@@ -347,68 +214,19 @@ public class Cluster implements Serializable {
 				return false;
 		} else if (!exitStatus.equals(other.exitStatus))
 			return false;
-		if (graylistedNodes == null) {
-			if (other.graylistedNodes != null)
+		
+		if (cluster_id == null) {
+			if (other.cluster_id != null)
 				return false;
-		} else if (!graylistedNodes.equals(other.graylistedNodes))
+		} else if (!cluster_id.equals(other.cluster_id))
 			return false;
-		if (hdfsCapacity == null) {
-			if (other.hdfsCapacity != null)
-				return false;
-		} else if (!hdfsCapacity.equals(other.hdfsCapacity))
-			return false;
-		if (hdfsDeadNodes == null) {
-			if (other.hdfsDeadNodes != null)
-				return false;
-		} else if (!hdfsDeadNodes.equals(other.hdfsDeadNodes))
-			return false;
-		if (hdfsDecommissionedNodes == null) {
-			if (other.hdfsDecommissionedNodes != null)
-				return false;
-		} else if (!hdfsDecommissionedNodes
-				.equals(other.hdfsDecommissionedNodes))
-			return false;
-		if (hdfsNodes == null) {
-			if (other.hdfsNodes != null)
-				return false;
-		} else if (!hdfsNodes.equals(other.hdfsNodes))
-			return false;
-		if (hdfsStatus == null) {
-			if (other.hdfsStatus != null)
-				return false;
-		} else if (!hdfsStatus.equals(other.hdfsStatus))
-			return false;
-		if (hdfsUnderreplicatedBlocks == null) {
-			if (other.hdfsUnderreplicatedBlocks != null)
-				return false;
-		} else if (!hdfsUnderreplicatedBlocks
-				.equals(other.hdfsUnderreplicatedBlocks))
-			return false;
-		if (hdfsUsedPercentage == null) {
-			if (other.hdfsUsedPercentage != null)
-				return false;
-		} else if (!hdfsUsedPercentage.equals(other.hdfsUsedPercentage))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (jobtrackerStatus == null) {
-			if (other.jobtrackerStatus != null)
-				return false;
-		} else if (!jobtrackerStatus.equals(other.jobtrackerStatus))
-			return false;
+		
 		if (replication == null) {
 			if (other.replication != null)
 				return false;
 		} else if (!replication.equals(other.replication))
 			return false;
-		if (safeMode == null) {
-			if (other.safeMode != null)
-				return false;
-		} else if (!safeMode.equals(other.safeMode))
-			return false;
+		
 		if (size == null) {
 			if (other.size != null)
 				return false;
@@ -424,21 +242,13 @@ public class Cluster implements Serializable {
 				return false;
 		} else if (!submitTime.equals(other.submitTime))
 			return false;
-		if (tasktrackerNodes == null) {
-			if (other.tasktrackerNodes != null)
-				return false;
-		} else if (!tasktrackerNodes.equals(other.tasktrackerNodes))
-			return false;
+		
 		if (username == null) {
 			if (other.username != null)
 				return false;
 		} else if (!username.equals(other.username))
 			return false;
-		if (version == null) {
-			if (other.version != null)
-				return false;
-		} else if (!version.equals(other.version))
-			return false;
+		
 		return true;
 	}
 
@@ -446,76 +256,34 @@ public class Cluster implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((blacklistedNodes == null) ? 0 : blacklistedNodes.hashCode());
+
 		result = prime * result
 				+ ((blocksize == null) ? 0 : blocksize.hashCode());
 		result = prime * result
 				+ ((clustername == null) ? 0 : clustername.hashCode());
 		result = prime * result
 				+ ((exitStatus == null) ? 0 : exitStatus.hashCode());
-		result = prime * result
-				+ ((graylistedNodes == null) ? 0 : graylistedNodes.hashCode());
-		result = prime * result
-				+ ((hdfsCapacity == null) ? 0 : hdfsCapacity.hashCode());
-		result = prime * result
-				+ ((hdfsDeadNodes == null) ? 0 : hdfsDeadNodes.hashCode());
-		result = prime
-				* result
-				+ ((hdfsDecommissionedNodes == null) ? 0
-						: hdfsDecommissionedNodes.hashCode());
-		result = prime * result
-				+ ((hdfsNodes == null) ? 0 : hdfsNodes.hashCode());
-		result = prime * result
-				+ ((hdfsStatus == null) ? 0 : hdfsStatus.hashCode());
-		result = prime
-				* result
-				+ ((hdfsUnderreplicatedBlocks == null) ? 0
-						: hdfsUnderreplicatedBlocks.hashCode());
-		result = prime
-				* result
-				+ ((hdfsUsedPercentage == null) ? 0 : hdfsUsedPercentage
-						.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime
-				* result
-				+ ((jobtrackerStatus == null) ? 0 : jobtrackerStatus.hashCode());
+		result = prime * result + ((cluster_id == null) ? 0 : cluster_id.hashCode());
 		result = prime * result
 				+ ((replication == null) ? 0 : replication.hashCode());
-		result = prime * result
-				+ ((safeMode == null) ? 0 : safeMode.hashCode());
 		result = prime * result + ((size == null) ? 0 : size.hashCode());
 		result = prime * result
 				+ ((stopTime == null) ? 0 : stopTime.hashCode());
 		result = prime * result
 				+ ((submitTime == null) ? 0 : submitTime.hashCode());
-		result = prime
-				* result
-				+ ((tasktrackerNodes == null) ? 0 : tasktrackerNodes.hashCode());
 		result = prime * result
 				+ ((username == null) ? 0 : username.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
     
     @Override
 	public String toString() {
-		return "Cluster [id=" + id + ", username=" + username + ", clusterid="
-				+ clusterid + ", clustername=" + clustername + ", nodes="
-				+ nodes + ", size=" + size + ", replication=" + replication
+		return "Cluster [cluster_id=" + cluster_id + ", username=" + username + ", cluster_in_system_id="
+				+ cluster_in_system_id + ", clustername=" + clustername 
+				//+ ", nodes="+ nodes + ", size=" 
+				+ size + ", replication=" + replication
 				+ ", blocksize=" + blocksize + ", exitStatus=" + exitStatus
-				+ ", submitTime=" + submitTime + ", stopTime=" + stopTime
-				+ ", jobtrackerStatus=" + jobtrackerStatus + ", version="
-				+ version + ", safeMode=" + safeMode + ", tasktrackerNodes="
-				+ tasktrackerNodes + ", blacklistedNodes=" + blacklistedNodes
-				+ ", graylistedNodes=" + graylistedNodes + ", hdfsStatus="
-				+ hdfsStatus + ", hdfsCapacity=" + hdfsCapacity
-				+ ", hdfsUsedPercentage=" + hdfsUsedPercentage + ", hdfsNodes="
-				+ hdfsNodes + ", hdfsDeadNodes=" + hdfsDeadNodes
-				+ ", hdfsDecommissionedNodes=" + hdfsDecommissionedNodes
-				+ ", hdfsUnderreplicatedBlocks=" + hdfsUnderreplicatedBlocks
-				+ "]";
+				+ ", submitTime=" + submitTime + ", stopTime=" + stopTime + "]";
 	}
 }

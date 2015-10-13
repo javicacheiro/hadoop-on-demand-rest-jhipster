@@ -14,4 +14,10 @@ public interface SshKeyRepository extends JpaRepository<SshKey,Long> {
 
 	@Query("select k from SshKey k where k.username = ?#{principal.username}")
 	List<SshKey> findAllForCurrentUser();
+	
+	@Query("select k from SshKey k where k.username = ?1")
+	List<SshKey> findAllForUser(String username);
+
+	@Query("select k from SshKey k where k.username = ?1 and k.enabled = true")
+	List<SshKey> findAllEnabledKeysForUSer(String username);
 }

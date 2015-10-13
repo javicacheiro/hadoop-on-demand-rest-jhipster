@@ -2,7 +2,6 @@ server:
     port: 10344
     address: localhost
 
-
 # security configuration (this key should be unique for your application, and kept secret)
 jhipster.security.rememberme.key: d60c10d51317616b36f5fba934d925648def68a6
 
@@ -47,8 +46,21 @@ mail:
 metrics:
     jmx.enabled: false
 
+authentication:
+    xauth:
+        secret: myXAuthSecret
+        # Token is valid 2 hours
+        tokenValidityInSeconds: 7200
+    ldap:
+        url: ldap://84.21.168.242
+        base: dc=cesga,dc=es
+
+# Disable the spring security default configuration from spring-boot-actuator
+management.security.enabled: true
+security.basic.enabled: false
+
 swagger:
-    apiDocsLocation: http://localhost:8080
+    #apiDocsLocation: http://localhost:8080
     title: jhipster API
     description: jhipster applications and beyond!
     termsOfServiceUrl: http://jhipster.github.io/

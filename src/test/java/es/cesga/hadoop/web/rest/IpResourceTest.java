@@ -111,7 +111,6 @@ public class IpResourceTest {
 
     @Test
     @Transactional
-    @WithMockUser(username="admin",roles={"USER","ADMIN"})
     public void getAllIps() throws Exception {
     	
         // Initialize the database
@@ -131,6 +130,7 @@ public class IpResourceTest {
     @Test
     @Transactional
     public void getIp() throws Exception {
+    	
         // Initialize the database
         ipRepository.saveAndFlush(ip);
 
@@ -165,7 +165,7 @@ public class IpResourceTest {
         ip.setAddress(UPDATED_ADDRESS);
         ip.setMask(UPDATED_MASK);
         ip.setEnabled(UPDATED_ENABLED);
-        restIpMockMvc.perform(put("/api/ips")
+        restIpMockMvc.perform(put("/api/ips/{id}", ip.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(ip)))
                 .andExpect(status().isOk());
