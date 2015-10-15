@@ -42,8 +42,9 @@ public class IPDelThread extends Thread{
 		}
 		for (Integer nodeId : nodeIdsList){
 			String ip = nodeRepository.findOne(nodeId).getIp();
-			String cmd = "ssh root@" + ip + " \""
-					+ Constants.IP_DEL_PATH + " '" + ipToDel.getAddress() + "/" + ipToDel.getMask() + "'\"";
+			String cmd = Constants.IP_DEL_PATH + " \""+ipToDel.getAddress()+"/"+ipToDel.getMask()+"\" " + " \"" + ip + " \"";
+			//String cmd = "ssh root@" + ip + " \""
+			//		+ Constants.IP_DEL_PATH + " '" + ipToDel.getAddress() + "/" + ipToDel.getMask() + "'\"";
 			try {
 				Process p = Runtime.getRuntime().exec(
 						new String[] { "/bin/sh", "-c", cmd });

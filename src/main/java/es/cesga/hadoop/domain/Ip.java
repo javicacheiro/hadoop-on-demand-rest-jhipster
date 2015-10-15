@@ -49,7 +49,35 @@ public class Ip implements Serializable {
     }
 
     public String getAddress() {
-        return address;
+    	if(this.mask != null){
+	    	if(this.mask == 0){
+	    		return "0.0.0.0";
+	    	}else if(this.mask == 32){
+	    		return address;
+	    	}else if(this.mask > 0 && this.mask < 32){
+	        	 String ipAddr=this.address;
+	        	 int cidrMask = this.mask;
+	        	 long bits = 0;
+	        	 bits = 0xffffffff ^ (1 << 32 - cidrMask) - 1;
+	        	 String maskString = String.format("%d.%d.%d.%d", (bits & 0x0000000000ff000000L) >> 24, (bits & 0x0000000000ff0000) >> 16, (bits & 0x0000000000ff00) >> 8, bits & 0xff);
+	        	 String networkAddr="";
+	        	 String[] ipAddrParts=ipAddr.split("\\.");
+	        	 String[] maskParts=maskString.split("\\.");
+	        	 for(int i=0;i<4;i++){
+		        	 int x=Integer.parseInt(ipAddrParts[i]);
+		        	 int y=Integer.parseInt(maskParts[i]);
+		        	 int z=x&y;
+		        	 networkAddr+=z+".";
+	        	 }
+	        	//Remove last dot
+	        	networkAddr = networkAddr.substring(0, networkAddr.length() - 1);
+	        	return networkAddr;
+	    	}else{
+	    		return "0.0.0.0";
+	    	}
+        }else{
+        	return address;
+        }
     }
 
     public void setAddress(String address) {

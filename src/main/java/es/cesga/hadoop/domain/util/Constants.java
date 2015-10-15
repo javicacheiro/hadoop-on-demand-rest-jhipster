@@ -25,7 +25,7 @@ public class Constants {
 	public final static String HADOOP_STATUS_PATH;
 	public final static String SSHKEY_ADD_PATH;
 	public final static String SSHKEY_DEL_PATH;
-	public final static String SSHKEY_MULTIDEL_PATH;
+	//public final static String SSHKEY_MULTIDEL_PATH;
 	public final static String IP_ADD_PATH;
 	public final static String IP_DEL_PATH;
 	
@@ -58,11 +58,11 @@ public class Constants {
 		HADOOP_START_PATH=SCRIPTS_PATH+"hadoop-start";
 		HADOOP_STOP_PATH=SCRIPTS_PATH+"hadoop-stop";
 		HADOOP_STATUS_PATH=SCRIPTS_PATH+"hadoop-status";
-		SSHKEY_ADD_PATH="sshkey-add";
-		SSHKEY_DEL_PATH="sshkey-del";
-		SSHKEY_MULTIDEL_PATH="sshkey-multidel";
-		IP_ADD_PATH="iptables-add";
-		IP_DEL_PATH="iptables-del";
+		SSHKEY_ADD_PATH=SCRIPTS_PATH+"sshkey-add";
+		SSHKEY_DEL_PATH=SCRIPTS_PATH+"sshkey-del";
+		//SSHKEY_MULTIDEL_PATH="sshkey-multidel";
+		IP_ADD_PATH=SCRIPTS_PATH+"iptables-add";
+		IP_DEL_PATH=SCRIPTS_PATH+"iptables-del";
 		
 		// USER CONSTRAINTS //
 		USER_MAX_CLUSTERS = Integer.parseInt(p.getProperty(USER_MAX_CLUSTERS_KEY));

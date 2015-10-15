@@ -42,10 +42,12 @@ public class SSHKeyDelThread extends Thread{
 		}
 		for (Integer nodeId : nodeIdsList){
 			String ip = nodeRepository.findOne(nodeId).getIp();
-			String cmdHadoop = "ssh hadoop@" + ip + " \""
-					+ Constants.SSHKEY_DEL_PATH + " '" + keyToDel + "'\"";
-			String cmdRoot = "ssh root@" + ip + " \""
-					+ Constants.SSHKEY_DEL_PATH + " '" + keyToDel + "'\"";
+			String cmdHadoop = Constants.SSHKEY_DEL_PATH + " \""+keyToDel.getPubkey()+" \"" + " \"" + ip + " \"";
+			String cmdRoot = Constants.SSHKEY_DEL_PATH + " \""+keyToDel.getPubkey()+" \"" +" \"" + ip + " \"";
+			//String cmdHadoop = "ssh hadoop@" + ip + " \""
+			//		+ Constants.SSHKEY_DEL_PATH + " '" + keyToDel + "'\"";
+			//String cmdRoot = "ssh root@" + ip + " \""
+			//		+ Constants.SSHKEY_DEL_PATH + " '" + keyToDel + "'\"";
 			
 			try {
 				Process pHadoop = Runtime.getRuntime().exec(

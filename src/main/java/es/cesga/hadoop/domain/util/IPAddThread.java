@@ -42,8 +42,9 @@ public class IPAddThread extends Thread{
 		}
 		for (Integer nodeId : nodeIdsList){
 			String ip = nodeRepository.findOne(nodeId).getIp();
-			String cmd = "ssh root@" + ip + " \""
-					+ Constants.IP_ADD_PATH + " '" + ipToAdd.getAddress() + "/" + ipToAdd.getMask() + "'\"";
+			String cmd = Constants.IP_ADD_PATH + " \""+ipToAdd.getAddress()+"/"+ipToAdd.getMask()+"\" " + " \"" + ip + " \"";
+			//String cmd = "ssh root@" + ip + " \""
+			//		+ Constants.IP_ADD_PATH + " '" + ipToAdd.getAddress() + "/" + ipToAdd.getMask() + "'\"";
 			try {
 				Process p = Runtime.getRuntime().exec(
 						new String[] { "/bin/sh", "-c", cmd });
