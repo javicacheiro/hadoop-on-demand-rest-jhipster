@@ -29,7 +29,8 @@ public class SshKey implements Serializable {
     private String type;
 
     @NotNull
-    @Column(name = "pubkey")
+    @Column(name = "pubkey", length = 2048)
+    @Size(max = 2048)
     private String pubkey;
 
     @Column(name = "enabled")
