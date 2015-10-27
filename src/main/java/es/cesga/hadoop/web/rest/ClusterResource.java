@@ -166,9 +166,29 @@ public class ClusterResource {
         }
     	
         //We get the nodes of the created cluster and save them
-        List<Node> nodes = cloudProvider.getClusterNodes(cluster);
-        nodeRepository.save(nodes);
-       
+        /*
+         * Try to get the nodes every 3 seconds, try it 5 times
+         * This tries to avoid the race condition between the REST API and the cloudProvider
+         * 
+         * + Tested for OpenNebula
+         */
+        List<Node> nodes = null; 
+        int tries = 0;
+        do{
+        	try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				break;
+			}
+        	nodes = cloudProvider.getClusterNodes(cluster);
+        }while(nodes.isEmpty() && tries < 5);
+        if(nodes == null || nodes.isEmpty()){
+        	//Something happened, nodes were not up even after waiting 15 seconds for it
+        	return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }else{
+        	nodeRepository.save(nodes);	
+        }
+        
 		//Save the cluster and return with the Created Status + Location header
         clusterRepository.save(cluster);
         return ResponseEntity.created(new URI("/api/clusters/" + cluster.getId())).build();
