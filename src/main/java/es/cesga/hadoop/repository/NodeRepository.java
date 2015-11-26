@@ -27,7 +27,7 @@ public interface NodeRepository extends JpaRepository<Node,Integer> {
 	
 	@Query("select node from Node node where node.cluster_id = ?1")
 	List<Node> findAllNodesForCluster(Integer cluster_id);
-	
+
 	@Override
 	@Query("select node from Node node where node.username = ?#{principal.username}")
 	List<Node> findAll();

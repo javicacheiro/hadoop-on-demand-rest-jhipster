@@ -33,8 +33,10 @@ public class IPAddAllEnabledThread extends OperatorThread {
 		//Node node = nodeRepository.findOne(Integer.valueOf(nodeId));
 		List<Ip> listEnabledIps = ipRepository.findAllEnabledIPsForUser(username);
 		for (Ip ipToAdd: listEnabledIps) {
-			String cmd = "ssh root@" + ip + " \""
-					+ Constants.IP_ADD_PATH + " '" + ipToAdd.getAddress() + "/" + ipToAdd.getMask() + "'\"";
+
+			String cmd = Constants.IP_ADD_PATH + " \""+ipToAdd.getAddress()+"/"+ipToAdd.getMask()+"\" " + " \"" + ip + " \"";
+			
+			
 			try {
 				Process p = Runtime.getRuntime().exec(
 						new String[] { "/bin/sh", "-c", cmd });

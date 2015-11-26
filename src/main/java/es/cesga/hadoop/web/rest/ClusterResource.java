@@ -5,6 +5,8 @@ import com.codahale.metrics.annotation.Timed;
 import es.cesga.hadoop.domain.Cluster;
 import es.cesga.hadoop.domain.Node;
 import es.cesga.hadoop.domain.util.AuthUtilsBean;
+import es.cesga.hadoop.domain.util.Constants;
+import es.cesga.hadoop.domain.util.Utils;
 import es.cesga.hadoop.repository.ClusterRepository;
 import es.cesga.hadoop.repository.NodeRepository;
 import es.cesga.hadoop.service.CloudProvider;
@@ -145,6 +147,21 @@ public class ClusterResource {
     	
     	log.debug("REST request to create Cluster : {}", cluster);
         
+    	
+    	/*
+    	 * Check user limit
+    	 * 
+    	 * The number of nodes in the database represents the number
+    	 * of ACTIVE nodes in the cloiud as the deleted clusters are removed
+    	 * along with their nodes from the database.
+    	 */
+    	long numberNodes = nodeRepository.count();
+    	
+    	if(numberNodes + cluster.getSize() >= Integer.parseInt(Constants.DEFAULT_USER_MAX_VMS)){
+    		return new ResponseEntity<>(HttpStatus.CONFLICT);
+    		//HTTP 409, CONFLICT, delete some clusters and try again
+    	}
+    	
         // Add current username information
         cluster.setUsername(auth.getUsername());
         
@@ -167,10 +184,12 @@ public class ClusterResource {
     	
         //We get the nodes of the created cluster and save them
         /*
-         * Try to get the nodes every 3 seconds, try it 5 times
+         * Try to get ALL the nodes every 3 seconds, try it 20 times
          * This tries to avoid the race condition between the REST API and the cloudProvider
+         * It is very important that we get most of the cluster nodes persisted in the database, as
+         * it is the only way we have of future accounting when checking the user limit.
          * 
-         * + Tested for OpenNebula
+         * + Tested for OpenNebula (test implemented in openNebula provider too)
          */
         List<Node> nodes = null; 
         int tries = 0;
@@ -181,7 +200,8 @@ public class ClusterResource {
 				break;
 			}
         	nodes = cloudProvider.getClusterNodes(cluster);
-        }while(nodes.isEmpty() && tries < 5);
+        	tries++;
+        }while(nodes.size() < cluster.getSize() && tries < 20);
         if(nodes == null || nodes.isEmpty()){
         	//Something happened, nodes were not up even after waiting 15 seconds for it
         	return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -257,11 +277,16 @@ public class ClusterResource {
         }
         
         //Save the stop time in the database
-    	existingCluster.setStopTime(new DateTime());
-    	clusterRepository.save(existingCluster);
+    	//existingCluster.setStopTime(new DateTime());
+        //clusterRepository.save(existingCluster);
     	
-    	//Remove the cluster from the cloud
+    	//Remove the cluster from the cloud and the database
     	try{
+    		List<Node> nodeList = nodeRepository.findAllNodesForCluster(existingCluster.getId());
+    		for(Node node : nodeList){
+    			nodeRepository.delete(node.getId());
+    		}
+    		clusterRepository.delete(existingCluster);
     		cloudProvider.delete(existingCluster);
     		return new ResponseEntity<>(HttpStatus.OK);
     		

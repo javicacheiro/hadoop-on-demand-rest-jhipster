@@ -10,12 +10,14 @@ public class Constants {
 	public final static String SCRIPTS_PATH_KEY = "SCRIPTS_PATH";
 	public final static String USER_MAX_CLUSTERS_KEY = "DEFAULT_USER_MAX_CLUSTERS";
 	public final static String USER_MAX_VMS_FOR_CLUSTER_KEY = "DEFAULT_USER_MAX_VMS_FOR_CLUSTER";
+	public final static String USER_MAX_VMS_KEY = "DEFAULT_USER_MAX_VMS";
 	
 	// ** DEFAULT PROPERTIES ** //
 	// ************************ //
 	public final static String DEFAULT_SCRIPTS_PATH = "./scripts/";
 	public final static String DEFAULT_USER_MAX_CLUSTERS = "1";
 	public final static String DEFAULT_USER_MAX_VMS_FOR_CLUSTER = "20";
+	public final static String DEFAULT_USER_MAX_VMS = "10";
 	
 	// ** SCRIPTS PATH ** //
 	// ****************** //

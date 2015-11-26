@@ -6,6 +6,7 @@ import es.cesga.hadoop.domain.Cluster;
 import es.cesga.hadoop.domain.Node;
 import es.cesga.hadoop.repository.ClusterRepository;
 import es.cesga.hadoop.repository.NodeRepository;
+import es.cesga.hadoop.service.CloudProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,8 @@ public class NodeResource {
     @Inject
     private ClusterRepository clusterRepository;
 
+    @Inject
+    private CloudProvider cloudProvider;
     
     /**
      * GET  /nodes
@@ -81,7 +84,7 @@ public class NodeResource {
     public ResponseEntity<Node> getNode(@PathVariable int id) {
         log.debug("REST request to get Cluster : {}", id);
                
-        //Get info from databse
+        //Get info from database
         Node result = nodeRepository.findOne(id);
         
         //Get info from cloud
@@ -111,10 +114,37 @@ public class NodeResource {
     @Timed
     public List<Node> getClusterNodes(@PathVariable int clusterid) {
         log.debug("REST request to get Node : cluster-{}", clusterid);
+       
+        //Get info from cloud
+        Cluster cluster = clusterRepository.findOne(clusterid);
+        List<Node> clusterNodesFromCloud = cloudProvider.getClusterNodes(cluster);
         
-        List<Node> nodeList = nodeRepository.findAllNodesForCluster(clusterid);
-        return nodeList; 
+        //Get nodes from database
+        List<Node> clusterNodesFromDatabase = nodeRepository.findAllNodesForCluster(clusterid);
+        
+        if(clusterNodesFromCloud.size() == 0){
+        	//Probably couldn't get info from cloud
+            //Return database info
+        	return clusterNodesFromDatabase;
+        }
+        
+        //Persist fresh node info in database
+        
+        /*
+         * This solution should be improved as the inner loop will only match
+         * in "size of nodes" cases, but will iterate for "size of nodes" ^ 2 times 
+         */
+        for(Node nodeCloud : clusterNodesFromCloud){
+            for(Node nodeDatabase : clusterNodesFromDatabase){
+            	if(nodeCloud.getNodeInSystemId() == nodeDatabase.getNodeInSystemId()){
+                	nodeDatabase.setStatus(nodeCloud.getStatus());
+                	nodeDatabase.setUcpu(nodeCloud.getUcpu());
+                	nodeDatabase.setUmem(nodeCloud.getUmem());
+                	nodeDatabase.setUptimeSeconds(nodeCloud.getUptimeSeconds());
+                	nodeRepository.saveAndFlush(nodeDatabase);
+            	}
+            }
+        }
+        return clusterNodesFromCloud;
     }
-    
-    
 }

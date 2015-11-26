@@ -29,7 +29,8 @@ authentication:
         # Token is valid 2 hours
         tokenValidityInSeconds: 7200
     ldap:
-        url: ldap://84.21.168.242
+        url: ldap://84.21.168.150     
+# url: ldap://84.21.168.242 Primario
         base: dc=cesga,dc=es
 
 swagger:

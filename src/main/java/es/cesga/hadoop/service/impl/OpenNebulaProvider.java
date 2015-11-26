@@ -177,13 +177,15 @@ public class OpenNebulaProvider implements CloudProvider {
 
 	@Override
 	public List<Cluster> findAll() {
-		
+		//Get all the nodes of the cluster
 		VirtualMachinePool vmPool = findAllVirtualMachines();
 		
+		//Get the cluster from the nodes (master node for each cluster)
 		List<Cluster> clusters = obtainClustersFromInstances(vmPool);
 		
+		//For all the cluster, set the size from its nodes
 		for (Cluster cluster : clusters) {
-			fillClusterInformation(cluster, vmPool);
+			setClusterSizeWithNodes(cluster, vmPool);
 		}
 
 //		log.debug("Clusters: " + clusters);
@@ -197,39 +199,50 @@ public class OpenNebulaProvider implements CloudProvider {
 	@Override
 	public Cluster show(Cluster cluster) {
 		VirtualMachinePool vmPool = findAllVirtualMachines();
-		fillClusterInformation(cluster, vmPool);
+		setClusterSizeWithNodes(cluster, vmPool);
 		return cluster;
 	}
 
-	public void fillClusterInformation(Cluster cluster,
+	public void setClusterSizeWithNodes(Cluster cluster,
 			VirtualMachinePool vmPool) {
 		
-		//Get all the running instances that are part of a cluster, get "the nodes of the cluster"
-		List<VirtualMachine> clusterNodesPool = 
-				filterVirtualMachinesByClusterId(vmPool, cluster.getCluster_In_System_Id());
+		List<VirtualMachine> clusterNodesPool = null;
+
+		//Do it until all the cluster nodes (its size), are retrieved, or enough attempts are made
+        int tries = 0;
+        do{
+        	try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				break;
+			}
+			//Get all the running instances that are part of a cluster, get "the nodes of the cluster"
+			clusterNodesPool = filterVirtualMachinesByClusterId(vmPool, cluster.getCluster_In_System_Id());
+        	tries++;
+		}while(clusterNodesPool.size() < cluster.getSize() && tries < 20);
 		
-		//Set the size of the cluster, the number of nodes retrieved
-		cluster.setSize(clusterNodesPool.size());
-	
+        if(clusterNodesPool != null){
+    		//Set the size of the cluster, the number of nodes retrieved
+    		cluster.setSize(clusterNodesPool.size());
+        }else{
+        	cluster.setSize(0);
+        }
 		log.debug("cluster: " + cluster);
 	}
 
 	
 	@Override
 	public List<Node> getClusterNodes(Cluster cluster){
-		//Get all the instances
-		VirtualMachinePool vmPool = findAllVirtualMachines();
-		fillClusterInformation(cluster, vmPool);
-		
+
 		//Get all the running instances that are part of a cluster, the "nodes of the cluster"
+		VirtualMachinePool vmPool = findAllVirtualMachines();
 		List<VirtualMachine> clusterNodesPool = 
 				filterVirtualMachinesByClusterId(vmPool, cluster.getCluster_In_System_Id());
 		
-		Node node;
 		List<Node> nodes = new ArrayList<>();
 		for (VirtualMachine vm : clusterNodesPool) {
 			//create a new node and set its basic information
-			node = new Node();
+			Node node = new Node();
 			node.setUsername(cluster.getUsername());
 			node.setNodeInSystemId(Integer.parseInt(getNodeInClusterId(vm)));
 			node.setName(vm.getName());

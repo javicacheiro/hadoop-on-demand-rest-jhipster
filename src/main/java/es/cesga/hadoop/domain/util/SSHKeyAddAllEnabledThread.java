@@ -36,12 +36,15 @@ public class SSHKeyAddAllEnabledThread extends OperatorThread {
 		//Node node = nodeRepository.findOne(Integer.valueOf(nodeId));		
 		List<SshKey> listEnabledKeys = sshKeyRepository.findAllEnabledKeysForUSer(username);
 		for(SshKey key : listEnabledKeys){
-			String cmdHadoop = "ssh hadoop@" + ip + " \""
-					+ Constants.SSHKEY_ADD_PATH + " '" + key.getType() + " " + key.getPubkey() + " " 
-					+ key.getUsername() + "@cloud.cesga.es" + "'\"";
-			String cmdRoot = "ssh root@" + ip + " \""
-					+ Constants.SSHKEY_ADD_PATH + " '" + key.getType() + " " + key.getPubkey() + " " 
-					+ key.getUsername() + "@cloud.cesga.es" + "'\"";
+			String cmdHadoop = Constants.SSHKEY_ADD_PATH  + " "  
+					+ "hadoop"  + " " 
+					+ "\"" + key.getPubkey() + "\"" + " "
+					+ ip;			
+			String cmdRoot = Constants.SSHKEY_ADD_PATH  + " "  
+					+ "root"  + " " 
+					+ "\"" + key.getPubkey() + "\"" + " "
+					+ ip;
+			
 			try {
 				Process pHadoop = Runtime.getRuntime().exec(
 						new String[] { "/bin/sh", "-c", cmdHadoop });

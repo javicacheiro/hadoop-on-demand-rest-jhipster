@@ -49,12 +49,24 @@ public class SSHKeyAddThread extends Thread {
 		}
 		for (Integer nodeId : nodeIdsList){
 			String ip = nodeRepository.findOne(nodeId).getIp();
-			String cmdHadoop = "ssh hadoop@" + ip + " \""
-					+ Constants.SSHKEY_ADD_PATH + " '" + keyToAdd.getType() + " " + keyToAdd.getPubkey() + " " 
-					+ keyToAdd.getUsername() + "@cloud.cesga.es" + "'\"";
-			String cmdRoot = "ssh root@" + ip + " \""
-					+ Constants.SSHKEY_ADD_PATH + " '" + keyToAdd.getType() + " " + keyToAdd.getPubkey() + " " 
-					+ keyToAdd.getUsername() + "@cloud.cesga.es" + "'\"";
+//			String cmdHadoop = "ssh hadoop@" + ip + " \""
+//					+ Constants.SSHKEY_ADD_PATH + " '" + keyToAdd.getType() + " " + keyToAdd.getPubkey() + " " 
+//					+ keyToAdd.getUsername() + "@cloud.cesga.es" + "'\"";
+//			String cmdRoot = "ssh root@" + ip + " \""
+//					+ Constants.SSHKEY_ADD_PATH + " '" + keyToAdd.getType() + " " + keyToAdd.getPubkey() + " " 
+//					+ keyToAdd.getUsername() + "@cloud.cesga.es" + "'\"";
+
+			
+			
+			String cmdHadoop = Constants.SSHKEY_ADD_PATH  + " "  
+					+ "hadoop"  + " " 
+					+ "\"" + keyToAdd.getPubkey() + "\"" + " "
+					+ ip;			
+			String cmdRoot = Constants.SSHKEY_ADD_PATH  + " "  
+					+ "root"  + " " 
+					+ "\"" + keyToAdd.getPubkey() + "\"" + " "
+					+ ip;
+			
 			
 			try {
 				Process pHadoop = Runtime.getRuntime().exec(
