@@ -8,7 +8,8 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
-import org.jasypt.util.text.BasicTextEncryptor;
+import org.keyczar.Crypter;
+import org.keyczar.exceptions.KeyczarException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,13 +27,20 @@ public class TokenProvider {
 	
     private final String secretKey;
     private final int tokenValidity;
-    private BasicTextEncryptor textEncryptor;
+    private Crypter textEncryptor;
 
     public TokenProvider(String secretKey, int tokenValidity) {
         this.secretKey = secretKey;
         this.tokenValidity = tokenValidity;
-        this.textEncryptor = new BasicTextEncryptor();
-        this.textEncryptor.setPassword(secretKey);
+        //this.textEncryptor = new BasicTextEncryptor();
+        //this.textEncryptor.setPassword(secretKey);
+        try {
+			this.textEncryptor = new Crypter(secretKey);
+		} catch (KeyczarException e) {
+			// TODO Auto-generated catch block
+			log.error("Error creating the textEncryptor for the token provider");
+			e.printStackTrace();
+		}
     }
 
     public Token createToken(UserDetails userDetails) {
@@ -46,7 +54,7 @@ public class TokenProvider {
         final StringBuilder details = new StringBuilder(170);
 		details.append(toBase64(username))
 		       .append(SEPARATOR)
-		       .append(toBase64(encrypt(password)))
+		       .append(encrypt(password))
 		       .append(SEPARATOR)
 		       .append(toBase64(role));
 		String subject = details.toString();     
@@ -96,7 +104,7 @@ public class TokenProvider {
             return null;
         }
         String[] parts = authToken.split(SPLITTER);
-        return decrypt(fromBase64(parts[1]));
+        return decrypt(parts[1]);
     }
     
 	public Collection<GrantedAuthority> getGrantedAuthoritiesFromToken(String authToken) {
@@ -141,10 +149,24 @@ public class TokenProvider {
 	}
 	
 	private String encrypt(String content) {
-		return textEncryptor.encrypt(content);
+		String encrypted = null;
+		try {
+			encrypted = textEncryptor.encrypt(content);
+		} catch (KeyczarException e) {
+			log.error("Error encryting text");
+			e.printStackTrace();
+		}
+		return encrypted;
 	}
 	
 	private String decrypt(String content) {
-		return textEncryptor.decrypt(content);
+		String decrypted = null;
+		try {
+			decrypted = textEncryptor.decrypt(content);
+		} catch (KeyczarException e) {
+			log.error("Error decryting text");
+			e.printStackTrace();
+		}
+		return decrypted;
 	}
 }
