@@ -12,8 +12,8 @@
 
 	<groupId>es.cesga.hadoop</groupId>
 	<artifactId>hadooprest</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<version>0.1.1</version>
+	<packaging>jar</packaging>
 
 	<name>hadooprest</name>
 
@@ -298,6 +298,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-logging</artifactId>
@@ -365,8 +371,6 @@
 			<groupId>org.opennebula</groupId>
 			<artifactId>client</artifactId>
 			<version>4.10.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/lib/org.opennebula.client.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlrpc</groupId>

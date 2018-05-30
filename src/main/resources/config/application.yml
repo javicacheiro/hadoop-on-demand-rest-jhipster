@@ -25,12 +25,13 @@ mail:
 
 authentication:
     xauth:
-        secret: myXAuthSecret
+        #secret: myXAuthSecret
+        # With keyczar we use a key directory instead of a string for the secret key
+        secret: /etc/keyczar/keys
         # Token is valid 2 hours
         tokenValidityInSeconds: 7200
     ldap:
-        url: ldap://84.21.168.150     
-# url: ldap://84.21.168.242 Primario
+        url: ldap://replica.ldap.lan.cesga.es
         base: dc=cesga,dc=es
 
 swagger:
@@ -42,3 +43,4 @@ swagger:
     licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
 
 cloud.opennebula.xml-rpc: http://cloud.cesga.es:2633/RPC2
+

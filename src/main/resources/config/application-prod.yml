@@ -6,11 +6,11 @@ spring:
         active: prod
     datasource:
         dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
-        url: jdbc:mysql://localhost:3306/hadooprest
+        url: jdbc:mysql://mysql:3306/hadooprest
         databaseName: 
         serverName: 
-        username: root
-        password: 
+        username: hadoop
+        password: hadoop
         cachePrepStmts: true
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
